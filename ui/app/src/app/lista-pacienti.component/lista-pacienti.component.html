@@ -1,0 +1,168 @@
+<div class="container"> 
+    <h1>Lista pacienti</h1>
+    
+    <div class="lista-pacienti">
+
+        <div class="notification-container">
+            <div
+                *ngFor="let notificare of notifications(); trackBy: trackByNotificationId"
+                class="notification"
+                [class.success]="notificare.type === 'success'"
+                [class.error]="notificare.type === 'error'"
+                [class.info]="notificare.type === 'info'"
+                [class.notification-removing]="notificare.removing"
+            >
+                <div class="notification-icon">
+                    <i
+                        *ngIf="notificare.type === 'success'"
+                        class="fa-solid fa-check"
+                    ></i>
+                    <i
+                        *ngIf="notificare.type === 'error'"
+                        class="fa-solid fa-xmark"
+                    ></i>
+                    <i
+                        *ngIf="notificare.type === 'info'"
+                        class="fa-solid fa-info"
+                    ></i>
+                </div>
+
+                <span class="notification-message">
+                    {{ notificare.message }}
+                </span>
+
+                <button
+                    class="btn-notification-close"
+                    (click)="removeNotification(notificare.id)"
+                >
+                    ×
+                </button>
+
+                <div
+                    class="notification-progress"
+                ></div>
+
+            </div>
+
+        </div>
+
+        <!-- Nav -->
+
+        <nav class="nav-lista-pacienti">
+
+            <form class="cauta-pacient">
+                <input class="input-cauta-pacient" placeholder="Cauta pacient...">
+            </form>
+            <button 
+                (click)="addPatient()" 
+                class="btn-add-patient"
+            >
+                <i class="fa-solid fa-plus"></i>
+                <span>Adauga Pacient</span>
+            </button>
+        </nav>    
+
+        <div class="hl"></div>
+
+        <!-- Pagini -->
+
+        <div class="pagination-container">
+            <div class="page-size">
+
+                <span>Afiseaza:</span>
+
+                <select [value]="pageSize" (change)="changePageSize(+$any($event.target).value)">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+
+                <span>din {{pageLength}} pacienti.</span>
+
+            </div>
+
+            <div class="pagination">
+
+                <button class="btn-page" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+                    <p>‹</p>
+                </button>
+
+                <button *ngFor="let page of getPages()" class="btn-page" [class.active]="page === currentPage" [disabled]="page === '...'" (click)="changePage(page)">
+                    <p>{{ page }}</p>
+                </button>
+
+                <button class="btn-page" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
+                    <p>›</p>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="hl"></div>
+
+        <!-- Tabel -->
+
+        <table>
+            <tr> 
+                <th>
+                    <span class="tht th-nume">Nume</span>
+                </th>
+                <th>
+                    <span class="tht">Prenume</span>
+                </th>
+                <th>
+                    <span class="tht">Varsta</span>
+                </th>
+                <th>
+                    <span class="tht">Sex</span>
+                </th>
+                <th>
+                    <span class="tht">CNP</span>
+                </th>
+                <th>
+                    <span class="tht">Actiuni</span>
+                </th>
+            </tr>   
+
+            <tr
+                *ngFor="let p of paginatedPatients"
+                (click)="selectPatient(p)"
+            >
+                <td class="td-nume">{{ p.nume }}</td>
+                <td class="td-prenume">{{ p.prenume }}</td>
+                <td class="centered-td">{{ getAge(p.data_nasterii) }}</td>
+                <td class="centered-td">{{ p.sex ? 'M' : 'F' }}</td>
+                <td>{{ p.cnp }}</td>
+
+                <td class="actions">
+                    <button
+                        class="btn btn-qr-patient"
+                        title="Generate QR"
+                        (click)="$event.stopPropagation()"
+                    >
+                        <i class="fa-solid fa-qrcode"></i>
+                    </button>
+
+                    <button
+                        class="btn btn-edit-patient"
+                        title="Edit Patient"
+                        (click)="editPatient(p); $event.stopPropagation()"
+                    >
+                        <i class="fa-solid fa-pencil"></i>
+                    </button>
+
+                    <button
+                        class="btn btn-delete-patient"
+                        title="Delete Patient"
+                        (click)="deletePatient(p); $event.stopPropagation()"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+        <div class="hl"></div>
+
+    </div>
+</div>

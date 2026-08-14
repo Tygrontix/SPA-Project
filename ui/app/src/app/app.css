@@ -1,0 +1,25 @@
+.container {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    min-height: 802px;
+    height: 100%;
+}
+
+app-lista-pacienti {
+  flex: 40%;
+}
+
+app-info-pacienti {
+  flex: 60%;
+}
+
+@media (max-width: 1399px) {
+  app-lista-pacienti {
+    flex-basis: 60%;
+  }
+
+  app-info-pacienti {
+    flex-basis: 40%;
+  }
+}

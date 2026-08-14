@@ -1,0 +1,10 @@
+.container {
+    margin: 0;
+    background-color: lightpink;
+    height: 100%;
+}
+
+h1 {
+    padding: 10px;
+    text-decoration: underline;
+}

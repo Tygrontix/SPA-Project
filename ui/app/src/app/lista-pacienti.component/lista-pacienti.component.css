@@ -1,0 +1,428 @@
+.container {
+    font-family: Garamond;
+    letter-spacing: 0.5px;
+    margin: 0;
+    background-image: linear-gradient(rgb(6, 41, 54), rgb(15, 139, 184));
+    height: 100%;
+}
+
+h1 {
+	margin-left: 5%;
+	margin-right: 5%;
+	padding-top: 2%;
+	margin-bottom: 2%;
+    color:  rgb(15, 139, 184);
+    text-shadow: 0px 0px 10px rgb(164, 222, 243);
+}
+
+.hl { 
+	margin: 2% 4%;
+	opacity: 80%;
+	border-top: 1px solid rgb(160, 220, 230);;
+	box-shadow: 0px 0px 6px rgb(164, 222, 243);
+}
+
+/* --------------------------------------- | Nav Lista Pacienti | --------------------------------------- */
+
+.nav-lista-pacienti {
+    width: 90%;
+    margin: 2% 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cauta-pacient {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Garamond;
+    font-size: 16px;
+    color: rgb(15, 139, 184);
+    background: rgb(6, 41, 54);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 30px;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 0 5px rgb(15, 139, 184);
+}
+
+.input-cauta-pacient {
+    padding: 6px 12px;
+    background: none;
+    border: none;
+    border-radius: 30px;
+    color: rgb(15, 139, 184);
+    transition: 0.3s ease-in-out;
+}
+
+.cauta-pacient:hover .input-cauta-pacient, .input-cauta-pacient:focus {
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    color: rgb(160, 220, 230);
+    background: rgb(2, 24, 32);
+    border-color: rgb(160, 220, 230);
+    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+}
+
+.input-cauta-pacient::placeholder {
+    opacity: 1;
+    transition: 0.3s ease-in-out;
+}
+
+.cauta-pacient:hover .input-cauta-pacient::placeholder, .input-cauta-pacient:focus::placeholder {
+    opacity: 0;
+}
+
+.input-cauta-pacient:focus {
+    outline: none;
+}
+
+.btn-add-patient {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Garamond;
+    font-size: 16px;
+    padding: 6px;
+    color: rgb(15, 139, 184);
+    background: rgb(6, 41, 54);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 0 5px rgb(15, 139, 184);
+}
+
+.btn-add-patient:hover{
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    color: rgb(160, 220, 230);
+    background: rgb(2, 24, 32);
+    border-color: rgb(160, 220, 230);
+    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+    transform: scale(1.05);
+}
+
+/* --------------------------------------- | Tabel | --------------------------------------- */
+
+table {
+    font-size: small;
+    width: 90%;
+    margin: 2% 5%;
+    border-collapse: collapse;
+    color: rgb(15, 139, 184);
+}
+
+th,td {
+    transition: 0.3s ease-in-out;
+    background-image: linear-gradient(rgb(1, 18, 29), rgb(9, 38, 58));
+    padding: 6px;
+    border: 1px solid rgb(15, 139, 184);
+    box-shadow: 0px 0px 6px rgb(15, 139, 184);
+    white-space: nowrap;
+}
+
+th {
+    color: rgb(160, 220, 230);
+    background-image: linear-gradient(rgb(6, 41, 54)20%, rgb(15, 139, 184));
+    text-decoration: underline;
+}
+
+.tht {
+    text-decoration: underline;
+    display: inline-block;
+    transition: 0.3s ease-in-out;
+}
+
+th:hover .tht {
+    cursor: pointer;
+    transform: scale(1.1);
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+}
+
+.centered-td {
+    text-align: center;
+}
+
+.td-nume {
+    width:20%;
+}
+
+.td-prenume {
+    width:40%;
+}
+
+/* --------------------------------------- | Butoane Tabel | --------------------------------------- */
+
+tr.selected td {
+    background-image: linear-gradient(rgb(2, 24, 32), rgb(15, 80, 110));
+    color: rgb(160, 220, 230);
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+}
+
+.actions {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.btn {
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(6, 41, 54);
+    color: rgb(160, 220, 230);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn i {
+    font-size: 12px;
+}
+
+.btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 12px rgb(15, 139, 184);
+}
+
+.btn-edit-patient:hover {
+    color: rgb(83, 223, 83);
+    border-color: rgb(83, 223, 83);
+}
+
+
+.btn-delete-patient:hover {
+    color: rgb(236, 56, 56);
+    border-color: rgb(236, 56, 56);
+}
+
+
+.btn-qr-patient:hover {
+    color: rgb(248, 230, 172);
+    border-color: rgb(248, 230, 172);
+}
+
+/* --------------------------------------- | Pagini Lista pacienti | --------------------------------------- */
+
+.pagination-container {
+    width: 90%;
+    margin: 2% 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgb(160, 220, 230);
+}
+
+.page-size select {
+    font-family: Garamond;
+    font-size: 14px;
+    color: rgb(160, 220, 230);
+    background: rgb(6, 41, 54);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgb(15, 139, 184);
+    transition: 0.3s ease-in-out;
+}
+
+.page-size select:hover, .page-size select:focus{
+    outline: none;
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    color: rgb(160, 220, 230);
+    background: rgb(2, 24, 32);
+    border-color: rgb(160, 220, 230);
+    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-page {
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Garamond;
+    font-size: 14px;
+    color: rgb(15, 139, 184);
+    background: rgb(6, 41, 54);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 0px 5px rgb(15, 139, 184);
+}
+
+.btn-page.active {
+    color: rgb(160, 220, 230);
+    background-image: linear-gradient(rgb(6, 41, 54)20%, rgb(15, 139, 184));
+    box-shadow: 0 0 10px rgb(164, 222, 243);
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+}
+
+.btn-page:hover:not(:disabled) {
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    color: rgb(160, 220, 230);
+    background-color: rgb(2, 24, 32);
+    border-color: rgb(160, 220, 230);
+    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+    transform: scale(1.1);
+}
+
+.btn-page:disabled {
+    transform: scale(0.9);
+    opacity: 60%;
+    cursor: default;
+}
+
+/* --------------------------------------- | Notificari | --------------------------------------- */
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.notification {
+    position: relative;
+    --notification-color: rgb(160, 220, 230);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: rgb(6, 41, 54);
+    border: 1px solid rgb(15, 139, 184);
+    border-radius: 4px;
+    color: var(--notification-color);
+    box-shadow: 0 0 6px rgb(15, 139, 184);
+    font-family: Garamond;
+    animation: notification-in 0.6s ease-in-out; 
+    pointer-events: auto;
+}
+
+.notification-removing {
+    animation: notification-out 0.6s ease-in-out;
+}
+
+.notification-icon {
+    font-size: 14px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    border: 1px solid var(--notification-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.notification-message {
+    flex: 1;
+    font-size: 14px;
+    overflow-wrap: break-word;
+}
+
+.btn-notification-close {
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: rgb(160, 220, 230);
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 70%;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-notification-close:hover {
+    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    opacity: 100%;
+    transform: scale(1.15);
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    border-radius:30px;
+    background: var(--notification-color);
+    animation: notification-progress 5s linear forwards;
+}
+
+@keyframes notification-progress {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+.notification.success {                
+    --notification-color: rgb(83, 223, 83);
+    border-color: rgb(83, 223, 83);
+    box-shadow: 0 0 8px rgb(83, 223, 83);
+}
+
+.notification.info {
+    --notification-color: rgb(160, 220, 230);
+    border-color: rgb(15, 139, 184);
+    box-shadow: 0 0 8px rgb(15, 139, 184);
+}
+
+.notification.error {                    
+    --notification-color: rgb(236, 56, 56);
+    border-color: rgb(236, 56, 56);
+    box-shadow: 0 0 8px rgb(236, 56, 56)
+}
+
+@keyframes notification-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+@keyframes notification-out {
+    from {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
