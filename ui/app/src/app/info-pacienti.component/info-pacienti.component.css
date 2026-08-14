@@ -1,10 +1,65 @@
-.container {
-    margin: 0;
-    background-color: lightpink;
+.info-pacient {
+    width: 100%;
     height: 100%;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    font-family: Garamond;
+    color: rgb(205, 235, 242);
+    background-image: linear-gradient(-145deg, rgb(12, 55, 70), rgb(22, 112, 140));
+    box-shadow: 0px 0px 50px rgb(60, 175, 205), inset 0 0 20px rgb(0, 20, 30);
 }
 
-h1 {
-    padding: 10px;
-    text-decoration: underline;
+.info-pacient h1 {
+    margin: 0px 0px 25px 0px;
+    color: rgb(160, 220, 230);
+    font-size: 28px;
+    font-weight: normal;
+    text-shadow: 0px 0px 8px rgb(150, 225, 240);
+
+}
+
+.info-pacient h2 {
+    margin: 0px 0px 25px 0px;
+    color: rgb(185, 230, 240);
+    font-size: 20px;
+    font-weight: normal;
+    text-shadow: 0px 0px 7px rgb(150, 225, 240);
+}
+
+.no-form {
+    padding: 35px;
+    text-align: center;
+    background: rgb(5, 35, 47);
+    border: 1px solid rgb(80, 190, 215);
+    border-radius: 6px;
+}
+
+.no-form h2 {
+    margin-bottom: 10px;
+}
+
+.no-form p {
+    margin-bottom: 25px;
+    color: rgb(175, 215, 225);
+}
+
+.form-p {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    gap: 20px 30px;
+    padding: 20px;
+    background: rgb(5, 35, 47);
+    border: 1px solid rgba(100, 200, 220, 0.35);
+    border-radius: 6px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    color: rgb(180, 225, 235);
+    font-size: 16px;
 }

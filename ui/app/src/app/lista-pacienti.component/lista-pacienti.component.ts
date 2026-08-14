@@ -4,13 +4,6 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatabaseService, Patient } from '../services/database.service';
 import { SharedServicesService } from '../services/shared-services.service';
 
-interface Notif {
-    id: number;
-    message: string;
-    type: 'success' | 'error' | 'info';
-    removing?: boolean;
-}
-
 @Component({
     standalone: true,
     selector: 'app-lista-pacienti',
@@ -21,13 +14,10 @@ interface Notif {
 
 export class ListaPacientiComponent implements OnInit {
     patients = signal<Patient[]>([]);
-    notifications = signal<Notif[]>([]);
-
-    private notificareId = 0;
 
     constructor(
         private database: DatabaseService,
-        private shared: SharedServicesService
+        public shared: SharedServicesService
     ) {
         effect(() => {
             const patient = this.shared.patientCreated();
@@ -206,7 +196,7 @@ export class ListaPacientiComponent implements OnInit {
 
         if(!confirmed) {
             console.log('Stergere anulata');
-            this.showNotification(
+            this.shared.showNotification(
                 'Stergerea a fost anulata.',
                 'info'
             );
@@ -216,7 +206,7 @@ export class ListaPacientiComponent implements OnInit {
         this.database.deletePatient(patient.id).subscribe({
             next: () => {
                 console.log(`Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}`);
-                this.showNotification(
+                this.shared.showNotification(
                     `Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}.`,
                      'success'
                 );
@@ -232,7 +222,7 @@ export class ListaPacientiComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Stergere esuata: ', error);
-                this.showNotification(
+                this.shared.showNotification(
                     'Stergere esuata.',
                     'error'
                 );
@@ -241,58 +231,8 @@ export class ListaPacientiComponent implements OnInit {
     }
 
     addPatient(): void { // trebuie dezvoltat si implementat 
-        const confirmed = confirm(
-             `Vrei sa adaugi un pacient nou ?`
-        );
-        if(!confirmed) {
-            return;
-        }
         this.shared.mode.set('create');
         this.shared.startCreate();
-    }
-
-    // Notificari
-
-    showNotification(
-        message: string,
-        type: 'success' | 'error' | 'info'
-    ):void {
-        const notificare: Notif = {
-            id: this.notificareId++,
-            message: message,
-            type: type
-        };
-
-        this.notifications.update(notifications => [
-            notificare,
-            ...notifications
-        ]);
-
-        setTimeout(() => {
-            this.notifications.update(notifications =>
-                notifications.map(n =>
-                    n.id === notificare.id ? { ...n, removing: true } : n
-                )
-            );
-            setTimeout(() => {
-                this.removeNotification(notificare.id);
-            }, 600);
-
-        }, 5000);
-    }
-
-    removeNotification(id: number): void {
-        this.notifications.update(notifications =>
-            notifications.filter(
-                notificare => notificare.id !== id
-            )
-        );
-    }
-
-    trackByNotificationId(
-        id: number, 
-        notificare: Notif): number {
-            return notificare.id;
     }
 
 }

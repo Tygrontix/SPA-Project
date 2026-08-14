@@ -5,7 +5,7 @@
 
         <div class="notification-container">
             <div
-                *ngFor="let notificare of notifications(); trackBy: trackByNotificationId"
+                *ngFor="let notificare of shared.notifications(); trackBy: shared.trackByNotificationId"
                 class="notification"
                 [class.success]="notificare.type === 'success'"
                 [class.error]="notificare.type === 'error'"
@@ -33,7 +33,7 @@
 
                 <button
                     class="btn-notification-close"
-                    (click)="removeNotification(notificare.id)"
+                    (click)="shared.removeNotification(notificare.id)"
                 >
                     ×
                 </button>

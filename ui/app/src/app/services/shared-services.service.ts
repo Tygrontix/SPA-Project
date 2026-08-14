@@ -1,6 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { Patient } from './database.service';
 
+interface Notif {
+    id: number;
+    message: string;
+    type: 'success' | 'error' | 'info';
+    removing?: boolean;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -9,6 +16,9 @@ export class SharedServicesService {
     mode = signal<'view' | 'create' | 'edit'>('view');
     patientCreated = signal<Patient | null>(null);
     patientDeleted = signal<string | null>(null);
+    notifications = signal<Notif[]>([]);
+
+    private notificareId = 0;
 
     startCreate(): void {
         this.selectedPatientId.set(null);
@@ -37,4 +47,49 @@ export class SharedServicesService {
         this.selectedPatientId.set(patient.id);
         this.mode.set('view');
     }
+
+    // Notificari
+
+    showNotification(
+        message: string,
+        type: 'success' | 'error' | 'info'
+    ):void {
+        const notificare: Notif = {
+            id: this.notificareId++,
+            message: message,
+            type: type
+        };
+
+        this.notifications.update(notifications => [
+            notificare,
+            ...notifications
+        ]);
+
+        setTimeout(() => {
+            this.notifications.update(notifications =>
+                notifications.map(n =>
+                    n.id === notificare.id ? { ...n, removing: true } : n
+                )
+            );
+            setTimeout(() => {
+                this.removeNotification(notificare.id);
+            }, 600);
+
+        }, 5000);
+    }
+
+    removeNotification(id: number): void {
+        this.notifications.update(notifications =>
+            notifications.filter(
+                notificare => notificare.id !== id
+            )
+        );
+    }
+
+    trackByNotificationId(
+        id: number, 
+        notificare: Notif): number {
+            return notificare.id;
+    }
+
 }
