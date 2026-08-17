@@ -1,156 +1,150 @@
-<div class="info-pacient">
+<div class="container">
+    <h1>Informatii pacient</h1>
+    <div class ="hl"></div>
+    <div class="info-pacienti">
 
-    <h1>Despre pacient</h1>
+        <!-- Forms -->
 
-    <!-- Forms -->
-
-    @if (!patient() && shared.mode() !== 'create') {
-        <div class="no-form">
-            <h2>Niciun pacient selectat</h2>
-            <p>Selecteaza un pacient din tabel.</p>
-            <button
-                type="button"
-                class="btn create-p"
-                (click)="startCreate()"
-            >
-                + Adauga pacient
-            </button>
-        </div>
-    } 
-    @else {
-        @if (shared.mode() === 'create') {
-            <h2>Introduceti datele pacientului nou:</h2>
+        @if (!patient() && shared.mode() !== 'create') {
+            <div class="no-form">
+                <h2>Niciun pacient selectat.</h2>
+                <p>Selecteaza un pacient din tabel.</p>
+            </div>
         } 
         @else {
-            <h2>
-                {{ formPatient().nume }}
-                {{ formPatient().prenume }}
-            </h2>
+            <div class="form-p">
+                <div class="form-group">
+                    <label for="nume">Nume</label>
+                    <input
+                        id="nume"
+                        type="text"
+                        [ngModel]="formPatient().nume"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            nume: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="prenume">Prenume</label>
+                    <input
+                        id="prenume"
+                        type="text"
+                        [ngModel]="formPatient().prenume"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            prenume: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="cnp">CNP</label>
+                    <input
+                        id="cnp"
+                        type="text"
+                        maxlength="13"
+                        [ngModel]="formPatient().cnp"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            cnp: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="data_nasterii">
+                        Data nasterii
+                    </label>
+                    <input
+                        id="data_nasterii"
+                        type="date"
+                        [ngModel]="formPatient().data_nasterii"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            data_nasterii: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="sex">Sex</label>
+                    <select
+                        id="sex"
+                        [ngModel]="formPatient().sex"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            sex: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                        <option [ngValue]="true">
+                            Masculin
+                        </option>
+                        <option [ngValue]="false">
+                            Feminin
+                        </option>
+                    </select>
+                </div>
+            </div>
         }
-        <div class="form-p">
-            <div class="form-group">
-                <label for="nume">Nume</label>
-                <input
-                    id="nume"
-                    type="text"
-                    [ngModel]="formPatient().nume"
-                    (ngModelChange)="formPatient.update(p => ({
-                        ...p,
-                        nume: $event
-                    }))"
-                    [disabled]="shared.mode() === 'view'"
-                >
+    </div>
+    <div class="bottom-container">
+        @if (patient() || shared.mode() === 'create') {
+            <div class="hl"></div>
+            <div class="info-pacienti">
+                <div class="form-actions">
+                    @if (shared.mode() === 'view') {
+                        <button
+                            type="button"
+                            class="btn-edit"
+                            (click)="startEdit()"
+                        >
+                            Editeaza
+                        </button>
+                        <button
+                            type="button"
+                            class="btn-deletet"
+                        >
+                            Sterge
+                        </button>
+                    }
+                    @if (shared.mode() === 'edit') {
+                        <button
+                            type="button"
+                            class="btn-save"
+                            (click)="savePatient()"
+                        >
+                            Salveaza
+                        </button>
+                        <button
+                            type="button"
+                            class="btn-cancel"
+                            (click)="cancelEdit()"
+                        >
+                            Anuleaza
+                        </button>
+                    }
+                    @if (shared.mode() === 'create') {
+                        <button
+                            type="button"
+                            class="btn-save"
+                            (click)="savePatient()"
+                        >
+                            Creeaza pacient
+                        </button>
+                        <button
+                            type="button"
+                            class="btn-cancel"
+                            (click)="cancelEdit()"
+                        >
+                            Anuleaza
+                        </button>
+                    }
+                </div>
             </div>
-            <div class="form-group">
-                <label for="prenume">Prenume</label>
-                <input
-                    id="prenume"
-                    type="text"
-                    [ngModel]="formPatient().prenume"
-                    (ngModelChange)="formPatient.update(p => ({
-                        ...p,
-                        prenume: $event
-                    }))"
-                    [disabled]="shared.mode() === 'view'"
-                >
-            </div>
-            <div class="form-group">
-                <label for="cnp">CNP</label>
-                <input
-                    id="cnp"
-                    type="text"
-                    maxlength="13"
-                    [ngModel]="formPatient().cnp"
-                    (ngModelChange)="formPatient.update(p => ({
-                        ...p,
-                        cnp: $event
-                    }))"
-                    [disabled]="shared.mode() === 'view'"
-                >
-            </div>
-            <div class="form-group">
-                <label for="data_nasterii">
-                    Data nasterii
-                </label>
-                <input
-                    id="data_nasterii"
-                    type="date"
-                    [ngModel]="formPatient().data_nasterii"
-                    (ngModelChange)="formPatient.update(p => ({
-                        ...p,
-                        data_nasterii: $event
-                    }))"
-                    [disabled]="shared.mode() === 'view'"
-                >
-            </div>
-            <div class="form-group">
-                <label for="sex">Sex</label>
-                <select
-                    id="sex"
-                    [ngModel]="formPatient().sex"
-                    (ngModelChange)="formPatient.update(p => ({
-                        ...p,
-                        sex: $event
-                    }))"
-                    [disabled]="shared.mode() === 'view'"
-                >
-                    <option [ngValue]="true">
-                        Masculin
-                    </option>
-                    <option [ngValue]="false">
-                        Feminin
-                    </option>
-                </select>
-            </div>
-        </div>
-        <div class="form-actions">
-            @if (shared.mode() === 'view') {
-                <button
-                    type="button"
-                    class="btn-edit"
-                    (click)="startEdit()"
-                >
-                    Editeaza
-                </button>
-                <button
-                    type="button"
-                    class="btn-deletet"
-                >
-                    Sterge
-                </button>
-            }
-            @if (shared.mode() === 'edit') {
-                <button
-                    type="button"
-                    class="btn-save"
-                    (click)="savePatient()"
-                >
-                    Salveaza
-                </button>
-                <button
-                    type="button"
-                    class="btn-cancel"
-                    (click)="cancelEdit()"
-                >
-                    Anuleaza
-                </button>
-            }
-            @if (shared.mode() === 'create') {
-                <button
-                    type="button"
-                    class="btn-save"
-                    (click)="savePatient()"
-                >
-                    Creeaza pacient
-                </button>
-                <button
-                    type="button"
-                    class="btn-cancel"
-                    (click)="cancelEdit()"
-                >
-                    Anuleaza
-                </button>
-            }
-        </div>
-    }
+        }
+        <div class="hl"></div>
+    </div>
 </div>

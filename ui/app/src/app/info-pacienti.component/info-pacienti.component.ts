@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { DatabaseService, Patient, NewPatient } from '../services/database.service';
 import { SharedServicesService } from '../services/shared-services.service';
 
-
 @Component({
     standalone: true,
     selector: 'app-info-pacienti',
@@ -39,16 +38,8 @@ export class InfoPacientiComponent {
             if (!id) {
                 this.patient.set(null);
                 this.shared.mode.set('view');
-
-                this.formPatient.set({
-                    nume: '',
-                    prenume: '',
-                    data_nasterii: '',
-                    sex: false,
-                    cnp: ''
-                });
+                this.clearForms();
                 return;
-                
             }
 
             this.database.getPatient(id).subscribe({
@@ -61,6 +52,7 @@ export class InfoPacientiComponent {
                         sex: data.sex,
                         cnp: data.cnp
                     });
+                    this.shared.mode.set('view');
                 },
                 error: (error) => {
                     console.error(
@@ -73,8 +65,6 @@ export class InfoPacientiComponent {
         });
     }
 
-    // Goleste form
-
     clearForms(): void {
         this.formPatient.set({
             nume: '',
@@ -85,15 +75,11 @@ export class InfoPacientiComponent {
         });
     }
 
-    // Creaza form pt pacient
-
     startCreate(): void {
         this.patient.set(null);
         this.clearForms();
         this.shared.mode.set('create');
     }
-
-    // Edit form pacient
 
     startEdit(): void {
         if(!this.patient()) {
@@ -101,8 +87,6 @@ export class InfoPacientiComponent {
         }
         this.shared.mode.set('edit');
     };
-
-    // Cancel edit form
 
     cancelEdit(): void {
         const patient = this.patient();
@@ -125,10 +109,8 @@ export class InfoPacientiComponent {
         });
         this.shared.mode.set('view');
     }
-    
-    // Salveaza schimbari 
 
-    savePatient(): void { // trebuie schimbat
+    savePatient(): void {
         const form = this.formPatient();
 
         if(this.shared.mode() === 'create') {

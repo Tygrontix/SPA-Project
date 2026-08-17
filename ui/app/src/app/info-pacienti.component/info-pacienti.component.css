@@ -1,24 +1,37 @@
-.info-pacient {
-    width: 100%;
+.container {
     height: 100%;
-    padding: 25px 30px;
     box-sizing: border-box;
     font-family: Garamond;
+    letter-spacing: 0.5px;
     color: rgb(205, 235, 242);
     background-image: linear-gradient(-145deg, rgb(12, 55, 70), rgb(22, 112, 140));
-    box-shadow: 0px 0px 50px rgb(60, 175, 205), inset 0 0 20px rgb(0, 20, 30);
+    box-shadow: 0px 0px 50px rgba(60, 175, 205, 0.9), inset 0 0 20px rgba(0, 20, 30, 0.9);
 }
 
-.info-pacient h1 {
-    margin: 0px 0px 25px 0px;
+.info-pacienti {
+    width: 90%;
+    margin: 2% 5%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.container h1 {
+    margin-left: 5%;
+	margin-right: 5%;
+	padding-top: 2%;
     color: rgb(160, 220, 230);
-    font-size: 28px;
     font-weight: normal;
-    text-shadow: 0px 0px 8px rgb(150, 225, 240);
-
+    text-shadow: 0px 0px 8px rgba(150, 225, 240, 0.5);
 }
 
-.info-pacient h2 {
+.hl {
+	margin: 2% 4%;
+	opacity: 80%;
+	border-top: 1px solid rgb(160, 220, 230);
+	box-shadow: 0px 0px 6px rgb(150, 225, 240);
+}
+
+.container h2 {
     margin: 0px 0px 25px 0px;
     color: rgb(185, 230, 240);
     font-size: 20px;
@@ -26,11 +39,13 @@
     text-shadow: 0px 0px 7px rgb(150, 225, 240);
 }
 
+/* --------------------------------------- | No input | --------------------------------------- */
+
 .no-form {
-    padding: 35px;
+    padding: 40px;
     text-align: center;
-    background: rgb(5, 35, 47);
-    border: 1px solid rgb(80, 190, 215);
+    background: rgba(3, 33, 33, 0.5);
+    border: 1px solid rgb(100, 200, 200, 0.9);
     border-radius: 6px;
 }
 
@@ -39,27 +54,182 @@
 }
 
 .no-form p {
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     color: rgb(175, 215, 225);
 }
+
+/* --------------------------------------- | Forms | --------------------------------------- */
 
 .form-p {
     display: grid;
     grid-template-columns: repeat(2, minmax(250px, 1fr));
     gap: 20px 30px;
     padding: 20px;
-    background: rgb(5, 35, 47);
-    border: 1px solid rgba(100, 200, 220, 0.35);
-    border-radius: 6px;
+    background: rgba(3, 33, 33, 0.5);
+    border: 1px solid rgba(100, 200, 200, 0.9);
+    border-radius: 4px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 7px;
 }
 
 .form-group label {
     color: rgb(180, 225, 235);
     font-size: 16px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    font-family: Garamond;
+    font-size: 16px;
+    color: rgb(205, 235, 245);
+    background: rgba(3, 33, 33, 0.6);
+    border: 1px solid rgb(65, 170, 195);
+    border-radius: 4px;
+    outline: none;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 0px 4px rgba(65, 170, 195, 0.5);
+}
+
+.form-group input:hover,
+.form-group select:hover {
+    border-color: rgb(130, 220, 235);
+    box-shadow: 0px 0px 10px rgba(130, 220, 235, 0.5);
+    background: rgb(3, 33, 33);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgba(130, 220, 235, 0.6);
+
+    background: rgb(3, 33, 33);
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+    color: rgb(180, 225, 235);
+    background: rgb(18, 70, 84);
+    border-color: rgba(100, 190, 210, 0.5);
+    cursor: default;
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+.form-group select:disabled {
+    cursor: default;
+}
+
+/* --------------------------------------- | Form Buttons | --------------------------------------- */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    font-family: Garamond;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-edit {
+    padding: 6px;
+    color: rgb(200, 240, 240);
+    background-color: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
+    box-shadow: 0px 0px 5px rgb(65, 170, 195);
+}
+
+.btn-edit:hover {
+    text-shadow: 1px 1px 10px rgba(150, 225, 240, 0.8);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgba(130, 220, 235, 0.8);
+    transform: scale(1.05);
+}
+
+.btn-save {
+    padding: 6px;
+    color: rgb(200, 240, 240);
+    background-color: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
+    box-shadow: 0px 0px 5px rgb(65, 170, 195);
+}
+
+.btn-save:hover {
+    text-shadow: 1px 1px 10px rgba(150, 225, 240, 0.8);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgba(130, 220, 235, 0.8);
+    transform: scale(1.05);
+}
+
+.btn-deletet {
+    color: rgb(215, 90, 90);
+    background-color: rgb(100, 30, 30);
+    border: 1px solid rgb(215, 90, 90);
+    box-shadow: 0px 0px 5px rgb(215, 90, 90);
+}
+
+.btn-deletet:hover {
+    text-shadow: 1px 1px 10px rgba(245, 120, 120, 0.8);
+    color: rgb(240, 140, 140);
+    background-color: rgb(70, 10, 10);
+    border-color: rgb(245, 120, 120);
+    box-shadow: 0px 0px 10px rgba(235, 90, 90, 0.8);
+    transform: scale(1.05);
+}
+
+.btn-cancel {
+    text-shadow: 1px 1px 10px rgb(130, 90, 20);
+    color: rgb(250, 200, 80);
+    background-color: rgb(190, 130, 20);
+    border: 1px solid rgb(230, 150, 10);
+    box-shadow: 0px 0px 5px rgb(250, 200, 80);
+}
+
+.btn-cancel:hover {
+    text-shadow: 1px 1px 10px rgb(250, 200, 80);
+    color: rgb(250, 200, 80);
+    background-color: rgb(130, 90, 20);
+    border-color: rgb(250, 200, 80);
+    box-shadow: 0px 0px 10px rgb(250, 200, 80);
+    transform: scale(1.05);
+}
+
+/* --------------------------------------- | Layout | --------------------------------------- */
+
+@media (max-width: 1399px) {
+    .container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-p {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
 }

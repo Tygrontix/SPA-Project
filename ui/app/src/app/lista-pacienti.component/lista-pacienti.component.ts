@@ -231,7 +231,6 @@ export class ListaPacientiComponent implements OnInit {
     }
 
     addPatient(): void { // trebuie dezvoltat si implementat 
-        this.shared.mode.set('create');
         this.shared.startCreate();
     }
 

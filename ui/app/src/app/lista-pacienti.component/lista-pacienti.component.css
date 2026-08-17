@@ -2,8 +2,9 @@
     font-family: Garamond;
     letter-spacing: 0.5px;
     margin: 0;
-    background-image: linear-gradient(-145deg, rgb(6, 41, 54), rgb(15, 139, 184));
+    background-image: linear-gradient(145deg, rgb(12, 55, 70), rgb(22, 112, 140));
     height: 100%;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -13,14 +14,14 @@ h1 {
 	margin-bottom: 2%;
     color: rgb(160, 220, 230);
     font-weight: normal;
-    text-shadow:0px 0px 8px rgb(164, 222, 243);
+    text-shadow: 0px 0px 8px rgba(150, 225, 240, 0.5);
 }
 
 .hl { 
 	margin: 2% 4%;
 	opacity: 80%;
-	border-top: 1px solid rgb(160, 220, 230);;
-	box-shadow: 0px 0px 6px rgb(164, 222, 243);
+	border-top: 1px solid rgb(160, 220, 230);
+	box-shadow: 0px 0px 6px rgb(150, 225, 240);
 }
 
 /* --------------------------------------- | Nav Lista Pacienti | --------------------------------------- */
@@ -39,12 +40,12 @@ h1 {
     justify-content: center;
     font-family: Garamond;
     font-size: 16px;
-    color: rgb(15, 139, 184);
-    background: rgb(6, 41, 54);
-    border: 1px solid rgb(15, 139, 184);
+    color: rgb(200, 240, 240);
+    background-color: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
     border-radius: 30px;
     transition: 0.3s ease-in-out;
-    box-shadow: 0 0 5px rgb(15, 139, 184);
+    box-shadow: 0 0 5px rgb(65, 170, 195);
 }
 
 .input-cauta-pacient {
@@ -52,16 +53,16 @@ h1 {
     background: none;
     border: none;
     border-radius: 30px;
-    color: rgb(15, 139, 184);
+    color: rgb(200, 240, 240);
     transition: 0.3s ease-in-out;
 }
 
 .cauta-pacient:hover .input-cauta-pacient, .input-cauta-pacient:focus {
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
-    color: rgb(160, 220, 230);
-    background: rgb(2, 24, 32);
-    border-color: rgb(160, 220, 230);
-    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgb(130, 220, 235);
 }
 
 .input-cauta-pacient::placeholder {
@@ -75,6 +76,7 @@ h1 {
 
 .input-cauta-pacient:focus {
     outline: none;
+    background-color: rgb(3, 33, 33);
 }
 
 .btn-add-patient {
@@ -84,21 +86,21 @@ h1 {
     font-family: Garamond;
     font-size: 16px;
     padding: 6px;
-    color: rgb(15, 139, 184);
-    background: rgb(6, 41, 54);
-    border: 1px solid rgb(15, 139, 184);
+    color: rgb(200, 240, 240);
+    background-color: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
     border-radius: 4px;
     cursor: pointer;
     transition: 0.3s ease-in-out;
-    box-shadow: 0 0 5px rgb(15, 139, 184);
+    box-shadow: 0 0 5px rgb(65, 170, 195);
 }
 
-.btn-add-patient:hover{
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
-    color: rgb(160, 220, 230);
-    background: rgb(2, 24, 32);
-    border-color: rgb(160, 220, 230);
-    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+.btn-add-patient:hover {
+    text-shadow: 1px 1px 10px rgba(150, 225, 240, 0.8);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgba(130, 220, 235, 0.8);
     transform: scale(1.05);
 }
 
@@ -109,21 +111,21 @@ table {
     width: 90%;
     margin: 2% 5%;
     border-collapse: collapse;
-    color: rgb(15, 139, 184);
+    color: rgb(205, 235, 245);
 }
 
-th,td {
+th, td {
     transition: 0.3s ease-in-out;
-    background-image: linear-gradient(rgb(1, 18, 29), rgb(9, 38, 58));
+    background-image: linear-gradient(rgb(5, 35, 47), rgb(14, 60, 75));
     padding: 6px;
-    border: 1px solid rgb(15, 139, 184);
-    box-shadow: 0px 0px 6px rgb(15, 139, 184);
+    border: 1px solid rgb(65, 170, 195);
+    box-shadow: 0px 0px 6px rgb(65, 170, 195);
     white-space: nowrap;
 }
 
 th {
     color: rgb(160, 220, 230);
-    background-image: linear-gradient(rgb(6, 41, 54)20%, rgb(15, 139, 184));
+    background-image: linear-gradient(rgb(12, 55, 70) 20%, rgb(22, 112, 140));
     text-decoration: underline;
 }
 
@@ -136,7 +138,7 @@ th {
 th:hover .tht {
     cursor: pointer;
     transform: scale(1.1);
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
 }
 
 .centered-td {
@@ -144,19 +146,19 @@ th:hover .tht {
 }
 
 .td-nume {
-    width:20%;
+    width: 20%;
 }
 
 .td-prenume {
-    width:40%;
+    width: 40%;
 }
 
 /* --------------------------------------- | Butoane Tabel | --------------------------------------- */
 
-tr.selected td {
-    background-image: linear-gradient(rgb(2, 24, 32), rgb(15, 80, 110));
+tr.selected td { /* nu merge row selectat in tabel */
+    background-image: linear-gradient(red, rgb(15, 80, 110)); 
     color: rgb(160, 220, 230);
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
 }
 
 .actions {
@@ -171,10 +173,10 @@ tr.selected td {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgb(6, 41, 54);
+    background-color: rgb(3, 33, 33);
     color: rgb(160, 220, 230);
-    border: 1px solid rgb(15, 139, 184);
-    border-radius: 5px;
+    border: 1px solid rgb(65, 170, 195);
+    border-radius: 4px;
     cursor: pointer;
     transition: 0.3s ease;
 }
@@ -185,24 +187,22 @@ tr.selected td {
 
 .btn:hover {
     transform: scale(1.15);
-    box-shadow: 0 0 12px rgb(15, 139, 184);
+    box-shadow: 0 0 12px rgb(130, 220, 235);
 }
 
 .btn-edit-patient:hover {
-    color: rgb(83, 223, 83);
-    border-color: rgb(83, 223, 83);
+    color: rgb(80, 210, 115);
+    border-color: rgb(80, 210, 115);
 }
-
 
 .btn-delete-patient:hover {
-    color: rgb(236, 56, 56);
-    border-color: rgb(236, 56, 56);
+    color: rgb(215, 90, 90);
+    border-color: rgb(215, 90, 90);
 }
 
-
 .btn-qr-patient:hover {
-    color: rgb(248, 230, 172);
-    border-color: rgb(248, 230, 172);
+    color: rgb(245, 220, 150);
+    border-color: rgb(245, 220, 150);
 }
 
 /* --------------------------------------- | Pagini Lista pacienti | --------------------------------------- */
@@ -225,23 +225,23 @@ tr.selected td {
 .page-size select {
     font-family: Garamond;
     font-size: 14px;
-    color: rgb(160, 220, 230);
-    background: rgb(6, 41, 54);
-    border: 1px solid rgb(15, 139, 184);
+    color: rgb(200, 240, 240);
+    background: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
     border-radius: 4px;
     padding: 4px 8px;
     cursor: pointer;
-    box-shadow: 0 0 5px rgb(15, 139, 184);
+    box-shadow: 0 0 5px rgb(65, 170, 195);
     transition: 0.3s ease-in-out;
 }
 
-.page-size select:hover, .page-size select:focus{
+.page-size select:hover, .page-size select:focus {
     outline: none;
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
-    color: rgb(160, 220, 230);
-    background: rgb(2, 24, 32);
-    border-color: rgb(160, 220, 230);
-    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgb(130, 220, 235);
 }
 
 .pagination {
@@ -258,28 +258,28 @@ tr.selected td {
     justify-content: center;
     font-family: Garamond;
     font-size: 14px;
-    color: rgb(15, 139, 184);
-    background: rgb(6, 41, 54);
-    border: 1px solid rgb(15, 139, 184);
+    color: rgb(200, 240, 240);
+    background: rgb(14, 60, 75);
+    border: 1px solid rgb(65, 170, 195);
     border-radius: 4px;
     cursor: pointer;
     transition: 0.3s ease-in-out;
-    box-shadow: 0px 0px 5px rgb(15, 139, 184);
+    box-shadow: 0px 0px 5px rgb(65, 170, 195);
 }
 
 .btn-page.active {
-    color: rgb(160, 220, 230);
-    background-image: linear-gradient(rgb(6, 41, 54)20%, rgb(15, 139, 184));
-    box-shadow: 0 0 10px rgb(164, 222, 243);
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    color: rgb(225, 255, 255);
+    background-image: linear-gradient(rgb(12, 55, 70) 20%, rgb(22, 112, 140));
+    box-shadow: 0 0 10px rgb(150, 225, 240);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
 }
 
 .btn-page:hover:not(:disabled) {
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
-    color: rgb(160, 220, 230);
-    background-color: rgb(2, 24, 32);
-    border-color: rgb(160, 220, 230);
-    box-shadow: 0px 0px 10px rgb(160, 220, 230);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
+    color: rgb(225, 255, 255);
+    background-color: rgb(3, 33, 33);
+    border-color: rgb(165, 230, 240);
+    box-shadow: 0px 0px 10px rgb(130, 220, 235);
     transform: scale(1.1);
 }
 
@@ -310,11 +310,11 @@ tr.selected td {
     display: flex;
     align-items: center;
     padding: 10px;
-    background: rgb(6, 41, 54);
-    border: 1px solid rgb(15, 139, 184);
+    background-color: rgb(3, 33, 33);
+    border: 1px solid rgb(65, 170, 195);
     border-radius: 4px;
     color: var(--notification-color);
-    box-shadow: 0 0 6px rgb(15, 139, 184);
+    box-shadow: 0 0 6px rgb(65, 170, 195);
     font-family: Garamond;
     animation: notification-in 0.6s ease-in-out; 
     pointer-events: auto;
@@ -362,7 +362,7 @@ tr.selected td {
 }
 
 .btn-notification-close:hover {
-    text-shadow: 1px 1px 10px rgb(164, 222, 243);
+    text-shadow: 1px 1px 10px rgb(150, 225, 240);
     opacity: 100%;
     transform: scale(1.15);
 }
@@ -373,7 +373,7 @@ tr.selected td {
     left: 0;
     width: 100%;
     height: 3px;
-    border-radius:30px;
+    border-radius: 30px;
     background: var(--notification-color);
     animation: notification-progress 5s linear forwards;
 }
@@ -389,21 +389,21 @@ tr.selected td {
 }
 
 .notification.success {                
-    --notification-color: rgb(83, 223, 83);
-    border-color: rgb(83, 223, 83);
-    box-shadow: 0 0 8px rgb(83, 223, 83);
+    --notification-color: rgb(80, 210, 115);
+    border-color: rgb(80, 210, 115);
+    box-shadow: 0 0 8px rgb(80, 210, 115);
 }
 
 .notification.info {
     --notification-color: rgb(160, 220, 230);
-    border-color: rgb(15, 139, 184);
-    box-shadow: 0 0 8px rgb(15, 139, 184);
+    border-color: rgb(65, 170, 195);
+    box-shadow: 0 0 8px rgb(65, 170, 195);
 }
 
 .notification.error {                    
-    --notification-color: rgb(236, 56, 56);
-    border-color: rgb(236, 56, 56);
-    box-shadow: 0 0 8px rgb(236, 56, 56)
+    --notification-color: rgb(215, 90, 90);
+    border-color: rgb(215, 90, 90);
+    box-shadow: 0 0 8px rgb(215, 90, 90);
 }
 
 @keyframes notification-in {

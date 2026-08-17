@@ -21,13 +21,12 @@ export class SharedServicesService {
     private notificareId = 0;
 
     startCreate(): void {
-        this.selectedPatientId.set(null);
         this.mode.set('create');
+        this.selectedPatientId.set(null);
     }
 
     selectPatient(id: string): void {
         this.selectedPatientId.set(id);
-        this.mode.set('view');
     }
 
     startEdit(): void {
