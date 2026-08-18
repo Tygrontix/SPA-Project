@@ -37,7 +37,6 @@ export class InfoPacientiComponent {
 
             if (!id) {
                 this.patient.set(null);
-                this.shared.mode.set('view');
                 this.clearForms();
                 return;
             }
@@ -52,7 +51,6 @@ export class InfoPacientiComponent {
                         sex: data.sex,
                         cnp: data.cnp
                     });
-                    this.shared.mode.set('view');
                 },
                 error: (error) => {
                     console.error(
@@ -73,12 +71,6 @@ export class InfoPacientiComponent {
             sex: false,
             cnp: ''
         });
-    }
-
-    startCreate(): void {
-        this.patient.set(null);
-        this.clearForms();
-        this.shared.mode.set('create');
     }
 
     startEdit(): void {

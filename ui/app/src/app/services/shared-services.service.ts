@@ -27,6 +27,7 @@ export class SharedServicesService {
 
     selectPatient(id: string): void {
         this.selectedPatientId.set(id);
+        this.mode.set('view');
     }
 
     startEdit(): void {
