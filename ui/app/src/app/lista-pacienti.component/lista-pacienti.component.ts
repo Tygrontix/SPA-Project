@@ -196,10 +196,6 @@ export class ListaPacientiComponent implements OnInit {
 
         if(!confirmed) {
             console.log('Stergere anulata');
-            this.shared.showNotification(
-                'Stergerea a fost anulata.',
-                'info'
-            );
             return;
         }
 
