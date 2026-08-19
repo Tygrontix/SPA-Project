@@ -12,6 +12,7 @@ import { SharedServicesService } from '../services/shared-services.service';
 })
 export class InfoPacientiComponent {
     patient = signal<Patient | null>(null);
+    loadingPatient = signal(false);
 
     formPatient = signal({
         nume: '',
@@ -20,8 +21,6 @@ export class InfoPacientiComponent {
         sex: false,
         cnp: ''
     });
-
-    // Formateaza data
 
     private formatDate(date: string): string {
         return date.split('T')[0];
@@ -36,11 +35,13 @@ export class InfoPacientiComponent {
             const id = this.shared.selectedPatientId();
 
             if (!id) {
+                this.loadingPatient.set(false);
                 this.patient.set(null);
                 this.clearForms();
                 return;
             }
 
+            this.loadingPatient.set(true);
             this.database.getPatient(id).subscribe({
                 next: (data) => {
                     this.patient.set(data);
@@ -51,6 +52,7 @@ export class InfoPacientiComponent {
                         sex: data.sex,
                         cnp: data.cnp
                     });
+                    this.loadingPatient.set(false);
                 },
                 error: (error) => {
                     console.error(
@@ -58,6 +60,7 @@ export class InfoPacientiComponent {
                         error
                     );
                     this.patient.set(null);
+                    this.loadingPatient.set(false);
                 }
             });
         });
@@ -126,9 +129,14 @@ export class InfoPacientiComponent {
                     });
                     this.shared.mode.set('view');
                     console.log('Pacient creat:', savedPatient);
+                    this.shared.showNotification(`
+                        Pacient nou creat: ${savedPatient.nume} ${savedPatient.prenume} - ID: ${savedPatient.id}`, 
+                        'success'
+                    );
                 },
                 error: (err) => {
                     console.error('Eroare la crearea oacientului:', err);
+                    this.shared.showNotification('Eroare la crearea pacientului.', 'error');
                 }
             });
             return;
@@ -149,6 +157,7 @@ export class InfoPacientiComponent {
             };
             this.database.setPatient(updatedPatient).subscribe({
                 next:(savedPatient) => {
+                    this.shared.updatedPatient(savedPatient);
                     this.patient.set(savedPatient);
                     this.formPatient.set({
                         nume: savedPatient.nume,
@@ -159,6 +168,8 @@ export class InfoPacientiComponent {
                     });
                     this.shared.mode.set('view');
                     console.log('Schimbarile au fost salvate.');
+                    this.shared.showNotification('Schimbarile au fost salvate.', 'success'); 
+                    // trebuie tratat cazul "nici o schimbare efectuata"
                 }
             });
         }

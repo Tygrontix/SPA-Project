@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Patient } from './database.service';
+import { Patient, DatabaseService } from './database.service';
 
 interface Notif {
     id: number;
@@ -16,13 +16,18 @@ export class SharedServicesService {
     mode = signal<'view' | 'create' | 'edit'>('view');
     patientCreated = signal<Patient | null>(null);
     patientDeleted = signal<string | null>(null);
+    patientUpdated = signal<Patient | null>(null);
     notifications = signal<Notif[]>([]);
+
+    constructor(
+        private database: DatabaseService
+    ) {}
 
     private notificareId = 0;
 
     startCreate(): void {
-        this.mode.set('create');
         this.selectedPatientId.set(null);
+        this.mode.set('create');
     }
 
     selectPatient(id: string): void {
@@ -34,18 +39,47 @@ export class SharedServicesService {
         this.mode.set('edit');
     }
 
-    deletePatient(id: string): void {
-        if(this.selectedPatientId() === id) {
-            this.selectedPatientId.set(null);
-            this.mode.set('view');
+    deletePatient(patient: Patient): void {
+        const confirmed = confirm(
+            `Confirmi stergerea pacientului ${patient.nume} ${patient.prenume}?`
+        );
+
+        if(!confirmed) {
+            console.log('Stergere anulata.');
+            return;
         }
-        this.patientDeleted.set(id);
+
+        this.database.deletePatient(patient.id).subscribe({
+            next: () => {
+                console.log(`Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}`);
+                this.patientDeleted.set(patient.id);
+                if(this.selectedPatientId() === patient.id) {
+                    this.selectedPatientId.set(null);
+                    this.mode.set('view');
+                };
+                this.showNotification(
+                    `Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}.`,
+                     'success'
+                );
+            },
+            error: (error) => {
+                console.error('Stergere esuata: ', error);
+                this.showNotification(
+                    'Stergere esuata.',
+                    'error'
+                );
+            }
+        });
     }
 
     createdPatient(patient: Patient): void {
         this.patientCreated.set(patient);
         this.selectedPatientId.set(patient.id);
         this.mode.set('view');
+    }
+
+    updatedPatient(patient: Patient): void {
+        this.patientUpdated.set(patient);
     }
 
     // Notificari

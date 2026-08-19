@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import QRCode from 'qrcode';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatabaseService, Patient } from '../services/database.service';
 import { SharedServicesService } from '../services/shared-services.service';
@@ -20,15 +21,40 @@ export class ListaPacientiComponent implements OnInit {
         public shared: SharedServicesService
     ) {
         effect(() => {
-            const patient = this.shared.patientCreated();
+            const createdPatient = this.shared.patientCreated();
 
-            if(!patient) {
+            if(!createdPatient) {
                 return;
             }
             this.patients.update(patients => [
-                patient,
-                ...patients.filter(p => p.id !== patient.id)
+                createdPatient,
+                ...patients.filter(p => p.id !== createdPatient.id)
             ]);
+        });
+
+        effect(() => {
+            const updatedPatient = this.shared.patientUpdated();
+
+            if(!updatedPatient) {
+                return;
+            }
+            this.patients.update(patients => 
+                patients.map(p => p.id === updatedPatient.id ? updatedPatient : p)
+            );
+        });
+
+        effect(() => {
+            const deletedPatient = this.shared.patientDeleted();
+
+            if(!deletedPatient) {
+                return;
+            }
+            this.patients.update(patients =>
+                patients.filter(p => p.id !== deletedPatient)
+            );
+            if(this.currentPage > this.totalPages && this.totalPages > 0) {
+                this.currentPage = this.totalPages;
+            }
         });
     }
 
@@ -162,68 +188,51 @@ export class ListaPacientiComponent implements OnInit {
         ];
     }
 
-    // Selecteaza un pacient din lista
+    // Pacienti
 
     selectPatient(patient: Patient): void {
         this.shared.selectPatient(patient.id);
     }
 
-    // Adauga pacientul nou in cap de tabel 
-
     addCreatedPatient(patient: Patient): void {
-    this.patients.update(patients => [
-        patient,
-        ...patients
-    ]);
-}
+        this.patients.update(patients => [
+            patient,
+            ...patients
+        ]);
+        console.log('Pacientul a fost adaugat.')
+    }
 
     // Butoane pacienti
 
     editPatient(patient: Patient): void {
-    console.log('EDIT CLICKED', patient);
-
-    this.shared.selectPatient(patient.id);
-    this.shared.startEdit();
-
-    console.log('ID:', this.shared.selectedPatientId());
-    console.log('MODE:', this.shared.mode());
-}
+        this.shared.selectPatient(patient.id);
+        this.shared.startEdit();
+    }
 
     deletePatient(patient: Patient): void {
-        const confirmed = confirm(
-            `Confirmi stergerea pacientului ${patient.nume} ${patient.prenume}?`
-        );
+        this.shared.deletePatient(patient);
+    }
 
-        if(!confirmed) {
-            console.log('Stergere anulata');
-            return;
-        }
+    linkQR: string ='';
+    imageQR: string ='';
+    showQR: boolean = false;
+    numeQR: string = '';
 
-        this.database.deletePatient(patient.id).subscribe({
-            next: () => {
-                console.log(`Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}`);
-                this.shared.showNotification(
-                    `Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}.`,
-                     'success'
-                );
-                this.patients.update(patients => 
-                    patients.filter(p => p.id !== patient.id)
-                );
-                this.shared.selectedPatientId.set(null);
-                this.shared.mode.set('view');
-                if(this.currentPage > this.totalPages && this.totalPages > 0) {
-                    this.currentPage = this.totalPages;
-                }
-                this.shared.deletePatient(patient.id);
-            },
-            error: (error) => {
-                console.error('Stergere esuata: ', error);
-                this.shared.showNotification(
-                    'Stergere esuata.',
-                    'error'
-                );
-            }
+    async generateQR(patient: Patient): Promise<void> {
+        const cifreCNP: string = patient.cnp.slice(7, 12);
+        const sex: string = patient.sex ? 'Masculin' : 'Feminin';
+        this.linkQR = `https://example.com/${patient.id}|${cifreCNP}|${sex}`;
+        this.numeQR = `${patient.nume} ${patient.prenume}`;
+        this.imageQR = await QRCode.toDataURL(this.linkQR, {
+            width: 256,
+            errorCorrectionLevel: 'M'
         });
+        this.showQR = true;
+        console.log(`Cod QR generat - ${patient.id}`)
+    }
+
+    closePopupQR(): void {
+        this.showQR = false;
     }
 
     addPatient(): void { 

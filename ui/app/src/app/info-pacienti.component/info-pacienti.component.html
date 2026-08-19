@@ -5,7 +5,7 @@
 
         <!-- Forms -->
 
-        @if (!patient() && shared.mode() !== 'create') {
+        @if(!loadingPatient() && !patient() && shared.mode() !== 'create') {
             <div class="no-form">
                 <h2>Niciun pacient selectat.</h2>
                 <p>Selecteaza un pacient din tabel.</p>
@@ -91,11 +91,11 @@
         }
     </div>
     <div class="bottom-container">
-        @if (patient() || shared.mode() === 'create') {
+        @if(loadingPatient() || patient() || shared.mode() === 'create') {
             <div class="hl"></div>
             <div class="info-pacienti">
                 <div class="form-actions">
-                    @if (shared.mode() === 'view') {
+                    @if(shared.mode() === 'view') {
                         <button
                             type="button"
                             class="btn-edit"
@@ -103,14 +103,17 @@
                         >
                             Editeaza
                         </button>
-                        <button
-                            type="button"
-                            class="btn-deletet"
-                        >
-                            Sterge
-                        </button>
+                        @if (patient(); as p) {
+                            <button
+                                type="button"
+                                class="btn-deletet"
+                                (click)="shared.deletePatient(p)"
+                            >
+                                Sterge
+                            </button>
+                        }
                     }
-                    @if (shared.mode() === 'edit') {
+                    @if(shared.mode() === 'edit') {
                         <button
                             type="button"
                             class="btn-save"
@@ -126,7 +129,7 @@
                             Anuleaza
                         </button>
                     }
-                    @if (shared.mode() === 'create') {
+                    @if(shared.mode() === 'create') {
                         <button
                             type="button"
                             class="btn-save"

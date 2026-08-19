@@ -1,6 +1,9 @@
 <div class="container"> 
     <h1>Lista pacienti</h1>
     <div class="lista-pacienti">
+
+        <!-- Notificari -->
+
         <div class="notification-container">
             <div
                 *ngFor="let notificare of shared.notifications(); trackBy: shared.trackByNotificationId"
@@ -135,9 +138,11 @@
                 <td class="actions"
                     (click)="$event.stopPropagation()"
                 >
+
                     <button
                         class="btn btn-qr-patient"
                         title="Generate QR"
+                        (click)="generateQR(p)"
                     >
                         <i class="fa-solid fa-qrcode"></i>
                     </button>
@@ -160,6 +165,22 @@
                 </td>
             </tr>
         </table>
+
+        <!-- QR Popup -->
+
+        @if(showQR) {
+            <div class="popup-overlay" (click)="closePopupQR()">
+                <h2 (click)="$event.stopPropagation()" >Cod QR - {{numeQR}}</h2>
+                <div class="popup-QR" (click)="$event.stopPropagation()">
+                    <img
+                        [src]="imageQR"
+                        alt="Cod QR"
+                        width="123"
+                        hiegth="123"
+                    >
+                </div>
+            </div>                            
+        }
 
         <div class="hl"></div>
 
