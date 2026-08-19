@@ -129,8 +129,11 @@ th {
     text-decoration: underline;
 }
 
-.tht {
+.th-label {
     text-decoration: underline;
+}
+
+.tht {
     display: inline-block;
     transition: 0.3s ease-in-out;
 }
@@ -141,16 +144,28 @@ th:hover .tht {
     text-shadow: 1px 1px 10px rgb(150, 225, 240);
 }
 
+.sortable i {
+    font-size: 10px;
+}
+
 .centered-td {
     text-align: center;
 }
 
-.td-nume {
-    width: 20%;
-}
-
 .td-prenume {
     width: 40%;
+}
+
+.th-nume {
+    min-width: 80px;
+}
+
+.th-varsta {
+    min-width:75px;
+}
+
+.th-sex {
+    min-width:21px;
 }
 
 /* --------------------------------------- | Butoane Tabel | --------------------------------------- */

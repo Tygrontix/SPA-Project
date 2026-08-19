@@ -1,9 +1,16 @@
-import { Component, OnInit, signal, effect } from '@angular/core';
+import { Component, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import QRCode from 'qrcode';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatabaseService, Patient } from '../services/database.service';
 import { SharedServicesService } from '../services/shared-services.service';
+
+type ColSort = 'nume' | 'prenume' | 'varsta' | 'sex';
+
+interface CriteriuSortareInterface {
+    coloana: ColSort;
+    directie: 'asc' | 'desc';
+}
 
 @Component({
     standalone: true,
@@ -14,7 +21,9 @@ import { SharedServicesService } from '../services/shared-services.service';
 })
 
 export class ListaPacientiComponent implements OnInit {
+    criteriuSortare = signal<CriteriuSortareInterface[]>([]);
     patients = signal<Patient[]>([]);
+    defaultSort = signal<Patient[]>([]);
 
     constructor(
         private database: DatabaseService,
@@ -26,10 +35,19 @@ export class ListaPacientiComponent implements OnInit {
             if(!createdPatient) {
                 return;
             }
-            this.patients.update(patients => [
+            this.defaultSort.update(patients => [
                 createdPatient,
                 ...patients.filter(p => p.id !== createdPatient.id)
             ]);
+            if(this.criteriuSortare().length === 0) {
+                this.patients.update(patients => [
+                createdPatient,
+                ...patients.filter(p => p.id !== createdPatient.id)
+                ]);
+            }
+            else {
+                this.sorteazaPacienti(this.criteriuSortare());
+            }
         });
 
         effect(() => {
@@ -52,8 +70,16 @@ export class ListaPacientiComponent implements OnInit {
             this.patients.update(patients =>
                 patients.filter(p => p.id !== deletedPatient)
             );
-            if(this.currentPage > this.totalPages && this.totalPages > 0) {
-                this.currentPage = this.totalPages;
+            if(this.criteriuSortare().length === 0) {
+                this.patients.update(patients =>
+                    patients.filter(p => p.id !== deletedPatient)
+                );
+            }
+            else {
+                this.sorteazaPacienti(this.criteriuSortare());
+            }
+            if(this.currentPage() > this.totalPages && this.totalPages > 0) {
+                this.currentPage.set(this.totalPages);
             }
         });
     }
@@ -63,7 +89,7 @@ export class ListaPacientiComponent implements OnInit {
     ngOnInit(): void {
         this.database.getPatients().subscribe(data => {
             console.log('Pacienti:', data);
-
+            this.defaultSort.set(data);
             this.patients.set(data);
         });
     }
@@ -75,7 +101,6 @@ export class ListaPacientiComponent implements OnInit {
         const dataNastere = new Date(dataN);
         const dataActuala = new Date();
         const aniLuni: string[] = [];
-
         let ani = dataActuala.getFullYear() - dataNastere.getFullYear();
         let luni = dataActuala.getMonth() - dataNastere.getMonth();
 
@@ -102,26 +127,44 @@ export class ListaPacientiComponent implements OnInit {
         return aniLuni.join(' ');
     }
 
+    getAgeInMonths(dataN: string): number {
+        const dataNastere = new Date(dataN);
+        const dataActuala = new Date();
+        let ani = dataActuala.getFullYear() - dataNastere.getFullYear();
+        let luni = dataActuala.getMonth() - dataNastere.getMonth();
+
+        if(dataActuala.getDate() < dataNastere.getDate()) {
+            luni--;
+        }
+        if(luni < 0) {
+            ani--;
+            luni += 12;
+        }
+        return ani * 12 + luni;
+    }
+
     // Pagini lista
 
-    pageSize = 10;
-    currentPage = 1;
+    pageSize = signal(10);
+    currentPage = signal(1);
 
     get pageLength(): number {
         return this.patients().length;
     }
 
     get totalPages(): number {
-        return Math.ceil(this.patients().length / this.pageSize);
+        return Math.ceil(this.patients().length / this.pageSize());
     }
 
-    get paginatedPatients(): Patient[] {
+    paginatedPatients = computed(() => {
+        const patients = this.patients();
+        const pageSize = this.pageSize();
+        const currentPage = this.currentPage();
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
 
-        const start = (this.currentPage - 1) * this.pageSize;
-        const end = start + this.pageSize;
-
-        return this.patients().slice(start, end);
-    }
+        return patients.slice(start, end);
+    });
 
     changePage(page: number | string): void {
         if (typeof page !== 'number') {
@@ -132,12 +175,12 @@ export class ListaPacientiComponent implements OnInit {
             return;
         }
 
-        this.currentPage = page;
+        this.currentPage.set(page);
     }
 
     changePageSize(size: number): void {
-        this.pageSize = size;
-        this.currentPage = 1;
+        this.pageSize.set(size);
+        this.currentPage.set(1);
     }
 
     getPages(): (number | string)[] {
@@ -154,7 +197,7 @@ export class ListaPacientiComponent implements OnInit {
             );
         }
 
-        if (this.currentPage <= 3) {
+        if (this.currentPage() <= 3) {
             return [
                 1,
                 2,
@@ -165,7 +208,7 @@ export class ListaPacientiComponent implements OnInit {
             ];
         }
 
-        if (this.currentPage >= total - 2) {
+        if (this.currentPage() >= total - 2) {
             return [
                 1,
                 '...',
@@ -180,9 +223,9 @@ export class ListaPacientiComponent implements OnInit {
         return [
             1,
             '...',
-            this.currentPage - 1,
-            this.currentPage,
-            this.currentPage + 1,
+            this.currentPage() - 1,
+            this.currentPage(),
+            this.currentPage() + 1,
             '...',
             total
         ];
@@ -239,4 +282,83 @@ export class ListaPacientiComponent implements OnInit {
         this.shared.startCreate();
     }
 
+    // Sortare
+
+    sortBy(coloana: ColSort): void {
+        this.criteriuSortare.update(criteriu => {
+            const index = criteriu.findIndex(c => c.coloana === coloana);
+            let criteriiNoi: CriteriuSortareInterface[];
+
+            if(index === -1) {
+                criteriiNoi = [
+                    ...criteriu,{coloana: coloana, directie: 'asc'}
+                ];
+            }
+            else if(criteriu[index].directie === 'asc') {
+                criteriiNoi = [...criteriu];
+                criteriiNoi[index] = {
+                    ...criteriu[index],
+                    directie: 'desc'
+                };
+            }
+            else {
+                criteriiNoi = criteriu.filter(criteriu => criteriu.coloana !== coloana);
+            }
+            if(criteriiNoi.length === 0) {
+                this.patients.set(this.defaultSort());
+            }
+            else {
+                this.sorteazaPacienti(criteriiNoi);
+            }
+
+            return criteriiNoi;
+        });
+    }
+
+    sorteazaPacienti(criterii : CriteriuSortareInterface[]): void {
+        const pacientiSortati = [...this.patients()].sort((a, b) => {
+            for(const criteriu of criterii) {
+                let rez = 0;
+                switch(criteriu.coloana) {
+                    case 'nume':
+                        rez = a.nume.localeCompare(
+                            b.nume,
+                            'ro',
+                            {sensitivity: 'base'}
+                        );
+                        break;
+
+                    case 'prenume':
+                        rez = a.prenume.localeCompare(
+                            b.prenume,
+                            'ro',
+                            {sensitivity: 'base'}
+                        );
+                        break;
+
+                    case 'varsta':
+                        rez = this.getAgeInMonths(a.data_nasterii) - this.getAgeInMonths(b.data_nasterii);
+                        break;
+
+                    case 'sex':
+                        rez = Number(a.sex) - Number(b.sex);
+                        break;  
+                }
+                if(rez !== 0) {
+                    return criteriu.directie === 'asc' ? rez : -rez;
+                }
+            }
+            return 0;
+        });
+        this.patients.set(pacientiSortati);
+    }
+
+    getSortDirection(coloana: ColSort): 'asc' | 'desc' | null {
+        const criteriu = this.criteriuSortare().find(c => c.coloana === coloana);
+
+        if(criteriu) {
+            return criteriu.directie;
+        }
+        return null;
+    }
 }

@@ -72,7 +72,7 @@
 
                 <span>Afiseaza:</span>
 
-                <select [value]="pageSize" (change)="changePageSize(+$any($event.target).value)">
+                <select [value]="pageSize()" (change)="changePageSize(+$any($event.target).value)">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
@@ -84,15 +84,15 @@
 
             <div class="pagination">
 
-                <button class="btn-page" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+                <button class="btn-page" [disabled]="currentPage() === 1" (click)="changePage(currentPage() - 1)">
                     <p>‹</p>
                 </button>
 
-                <button *ngFor="let page of getPages()" class="btn-page" [class.active]="page === currentPage" [disabled]="page === '...'" (click)="changePage(page)">
+                <button *ngFor="let page of getPages()" class="btn-page" [class.active]="page === currentPage()" [disabled]="page === '...'" (click)="changePage(page)">
                     <p>{{ page }}</p>
                 </button>
 
-                <button class="btn-page" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
+                <button class="btn-page" [disabled]="currentPage() === totalPages" (click)="changePage(currentPage() + 1)">
                     <p>›</p>
                 </button>
 
@@ -105,28 +105,76 @@
 
         <table>
             <tr> 
-                <th>
-                    <span class="tht th-nume">Nume</span>
+                <th 
+                    class="sortable"
+                    title="Sorteaza dupa nume"
+                    (click)="sortBy('nume')"
+                >
+                    <span class="tht th-nume sortable">
+                        <span class="th-label">Nume</span>
+                        @if(getSortDirection('nume') === 'asc') {
+                            <i class="fa-solid fa-arrow-up"></i>
+                        }@else if (getSortDirection('nume') === 'desc') {
+                            <i class="fa-solid fa-arrow-down"></i>
+                        }               
+                    </span>
+                </th>
+                <th
+                    class="sortable th-nume"
+                    title="Sorteaza dupa nume"
+                    (click)="sortBy('prenume')"
+                >
+                    <span class="tht sortable">
+                        <span class="th-label">Prenume</span>
+                        @if(getSortDirection('prenume') === 'asc') {
+                            <i class="fa-solid fa-arrow-up"></i>
+                        }@else if (getSortDirection('prenume') === 'desc') {
+                            <i class="fa-solid fa-arrow-down"></i>
+                        }      
+                    </span>
+                </th>
+                <th
+                    class="sortable th-varsta"
+                    title="Sorteaza dupa nume"
+                    (click)="sortBy('varsta')"
+                >
+                    <span class="tht sortable">
+                        <span class="th-label">Varsta</span>
+                        @if(getSortDirection('varsta') === 'asc') {
+                            <i class="fa-solid fa-arrow-up"></i>
+                        }
+                        @else if(getSortDirection('varsta') === 'desc') {
+                            <i class="fa-solid fa-arrow-down"></i>
+                        }
+                    </span>
+                </th>
+                <th
+                    class="sortable th-sex"
+                    title="Sorteaza dupa nume"
+                    (click)="sortBy('sex')"
+                >
+                    <span class="tht sortable">
+                        @if(getSortDirection('sex') === 'asc') {
+                            <i class="fa-solid fa-venus"></i>
+                        }
+                        @else if(getSortDirection('sex') === 'desc') {
+                            <i class="fa-solid fa-mars"></i>
+                        }
+                        @else {
+                            <span class="th-label">Sex</span>
+                        }
+                    </span>                
                 </th>
                 <th>
-                    <span class="tht">Prenume</span>
+                    <span>CNP</span>
                 </th>
                 <th>
-                    <span class="tht">Varsta</span>
-                </th>
-                <th>
-                    <span class="tht">Sex</span>
-                </th>
-                <th>
-                    <span class="tht">CNP</span>
-                </th>
-                <th>
-                    <span class="tht">Actiuni</span>
+                    <span>Actiuni</span>
                 </th>
             </tr>   
 
             <tr
-                *ngFor="let p of paginatedPatients"
+                *ngFor="let p of paginatedPatients()"
                 (click)="selectPatient(p)"
             >
                 <td class="td-nume">{{ p.nume }}</td>
@@ -138,7 +186,6 @@
                 <td class="actions"
                     (click)="$event.stopPropagation()"
                 >
-
                     <button
                         class="btn btn-qr-patient"
                         title="Generate QR"
