@@ -26,7 +26,7 @@ app.get('/',(req,res)=>{
 
 // Afisare lista apacienti
 
-app.get('/listapacienti', async (req, res)=>{
+app.get('/fhir/Patient', async (req, res)=>{
     try {
         const pool = await sql.connect(config);
         const result = await pool   
@@ -48,7 +48,7 @@ app.get('/listapacienti', async (req, res)=>{
 
 // Afisare informatii pacient
 
-app.get('/listapacienti/:id', async (req, res) => {
+app.get('/fhir/Patient/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const pool = await sql.connect(config);
@@ -76,7 +76,7 @@ app.get('/listapacienti/:id', async (req, res) => {
 
 // Creeaza pacient
 
-app.post('/listapacienti', async (req, res) => {
+app.post('/fhir/Patient', async (req, res) => {
     try {
 
         console.log('date:', req.body);
@@ -111,7 +111,7 @@ app.post('/listapacienti', async (req, res) => {
 
 // Actualizeaza datele pacientului
 
-app.put('/listapacienti/:id', async (req, res) => {
+app.put('/fhir/Patient/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const {
@@ -157,7 +157,7 @@ app.put('/listapacienti/:id', async (req, res) => {
 
 // Stergere pacient
 
-app.delete('/listapacienti/:id', async (req, res) => {
+app.delete('/fhir/Patient/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const pool = await sql.connect(config);

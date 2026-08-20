@@ -22,28 +22,28 @@ export class DatabaseService {
     constructor(private http: HttpClient) {}
 
     getPatients(): Observable<Patient[]> {
-        return this.http.get<Patient[]>(`${this.api}/listapacienti`);
+        return this.http.get<Patient[]>(`${this.api}/fhir/Patient`);
     }
 
     getPatient(id: string): Observable<Patient> {
-        return this.http.get<Patient>(`${this.api}/listapacienti/${id}`);
+        return this.http.get<Patient>(`${this.api}/fhir/Patient/${id}`);
     }
 
     setPatient(patient: Patient | NewPatient): Observable<Patient> {
         if('id' in patient) {
             return this.http.put<Patient>(
-                `${this.api}/listapacienti/${patient.id}`,
+                `${this.api}/fhir/Patient/${patient.id}`,
                 patient
             );
         }
         return this.http.post<Patient>(
-            `${this.api}/listapacienti`,
+            `${this.api}/fhir/Patient`,
             patient
         );
     }
 
     deletePatient(id: string): Observable<any> {
-        return this.http.delete(`${this.api}/listapacienti/${id}`);
+        return this.http.delete(`${this.api}/fhir/Patient/${id}`);
     }
 
 }

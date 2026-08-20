@@ -39,15 +39,10 @@ export class ListaPacientiComponent implements OnInit {
                 createdPatient,
                 ...patients.filter(p => p.id !== createdPatient.id)
             ]);
-            if(this.criteriuSortare().length === 0) {
-                this.patients.update(patients => [
+            this.patients.update(patients => [
                 createdPatient,
                 ...patients.filter(p => p.id !== createdPatient.id)
-                ]);
-            }
-            else {
-                this.sorteazaPacienti(this.criteriuSortare());
-            }
+            ]);
         });
 
         effect(() => {
@@ -70,14 +65,10 @@ export class ListaPacientiComponent implements OnInit {
             this.patients.update(patients =>
                 patients.filter(p => p.id !== deletedPatient)
             );
-            if(this.criteriuSortare().length === 0) {
-                this.patients.update(patients =>
-                    patients.filter(p => p.id !== deletedPatient)
-                );
-            }
-            else {
-                this.sorteazaPacienti(this.criteriuSortare());
-            }
+            this.defaultSort.update(patients =>
+                patients.filter(p => p.id !== deletedPatient)
+            );
+            
             if(this.currentPage() > this.totalPages && this.totalPages > 0) {
                 this.currentPage.set(this.totalPages);
             }
