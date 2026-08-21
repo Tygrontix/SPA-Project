@@ -130,6 +130,14 @@
     cursor: default;
 }
 
+.info-space {
+    padding: 10px;
+    color: rgb(185, 230, 240);
+    font-size: 20px;
+    font-weight: normal;
+    text-shadow: 0px 0px 7px rgb(150, 225, 240);
+}
+
 /* --------------------------------------- | Form Buttons | --------------------------------------- */
 
 .form-actions {

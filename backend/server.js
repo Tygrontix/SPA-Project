@@ -22,6 +22,44 @@ const config = {
     }
 };
 
+async function getPatientData(pool, id) {
+    const patientResult = await pool
+        .request()
+        .input('id', sql.UniqueIdentifier, id)
+        .query(`
+            SELECT *
+            FROM pacienti
+            WHERE id = @id
+        `);
+    if (patientResult.recordset.length === 0) {
+        return null;
+    }
+
+    const patient = patientResult.recordset[0];
+    const telefoaneResult = await pool
+        .request()
+        .input('pacient_id', sql.UniqueIdentifier, id)
+        .query(`
+            SELECT *
+            FROM pacient_telefoane
+            WHERE pacient_id = @pacient_id
+        `);
+    const adreseResult = await pool
+        .request()
+        .input('pacient_id', sql.UniqueIdentifier, id)
+        .query(`
+            SELECT *
+            FROM pacient_adrese
+            WHERE pacient_id = @pacient_id
+        `);
+
+    return {
+        ...patient,
+        telefoane: telefoaneResult.recordset,
+        adrese: adreseResult.recordset
+    };
+}
+
 app.get('/',(req,res)=>{
     return res.json("backend message");
 })
@@ -67,14 +105,9 @@ app.get('/fhir/Patient/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const pool = await sql.connect(config);
-        const result = await pool
-            .request()
-            .input('id', sql.UniqueIdentifier, id)
-            .query(`
-                SELECT * FROM pacienti
-                WHERE id = @id
-            `);
-        if(result.recordset.length === 0) {
+        const patient = await getPatientData(pool, id);
+
+        if (!patient) {
             return res.status(404).json(
                 createOperationOutcome(
                     'error',
@@ -84,7 +117,7 @@ app.get('/fhir/Patient/:id', async (req, res) => {
             );
         }
         res.json(
-            toFhirPatient(result.recordset[0])
+            toFhirPatient(patient)
         );
     }
     catch(err) {
@@ -95,6 +128,80 @@ app.get('/fhir/Patient/:id', async (req, res) => {
                 'error',
                 'exception',
                 'Eroare la obtinerea pacientului.'
+            )
+        );
+    }
+});
+
+// Afiseaza telefoane pacient
+
+app.get('/fhir/Patient/:id/telefoane', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const pool = await sql.connect(config);
+        const result = await pool
+            .request()
+            .input('pacient_id', sql.UniqueIdentifier, id)
+            .query(`
+                SELECT
+                    id,
+                    pacient_id,
+                    eticheta,
+                    numar
+                FROM pacient_telefoane
+                WHERE pacient_id = @pacient_id
+            `);
+
+        res.json(result.recordset);
+    }
+    catch(err) {
+        console.error('Eroare la obtinerea telefoanelor:', err);
+        logger.error(err, 'Eroare la obtinerea telefoanelor');
+        res.status(500).json(
+            createOperationOutcome(
+                'error',
+                'exception',
+                'Eroare la obtinerea telefoanelor.'
+            )
+        );
+    }
+});
+
+// Afisare adrese pacient
+
+app.get('/fhir/Patient/:id/adrese', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const pool = await sql.connect(config);
+        const result = await pool
+            .request()
+            .input('pacient_id', sql.UniqueIdentifier, id)
+            .query(`
+                SELECT
+                    id,
+                    pacient_id,
+                    tip,
+                    strada,
+                    numar_strada,
+                    bloc,
+                    etaj,
+                    apartament,
+                    judet_sector,
+                    oras,
+                    aceeasi_ca_domiciliul
+                FROM pacient_adrese
+                WHERE pacient_id = @pacient_id
+            `);
+        res.json(result.recordset);
+    }
+    catch(err) {
+        console.error('Eroare la obtinerea adreselor:', err);
+        logger.error(err, 'Eroare la obtinerea adreselor');
+        res.status(500).json(
+            createOperationOutcome(
+                'error',
+                'exception',
+                'Eroare la obtinerea adreselor.'
             )
         );
     }
@@ -143,6 +250,7 @@ app.post('/fhir/Patient', async (req, res) => {
         
         const dataNasterii =patient.birthDate ?? null;
         const cnp = patient.identifier?.find(identifier => identifier.system === 'urn:cnp')?.value ?? null;
+        const mentiuni = patient.note?.[0]?.text ?? null;
         const pool = await sql.connect(config);
         const result = await pool
             .request()
@@ -152,32 +260,108 @@ app.post('/fhir/Patient', async (req, res) => {
             .input('data_nasterii', sql.Date, dataNasterii)
             .input('sex', sql.VarChar, sex)
             .input('cnp', sql.VarChar, cnp)
+            .input('mentiuni', sql.VarChar, mentiuni)
             .query(`
-                INSERT INTO pacienti
-                    (
-                        id,
-                        nume,
-                        prenume,
-                        initiale_tata,
-                        data_nasterii,
-                        sex,
-                        cnp
-                    )
+                INSERT INTO pacienti (
+                    id,
+                    nume,
+                    prenume,
+                    initiale_tata,
+                    data_nasterii,
+                    sex,
+                    cnp,
+                    mentiuni
+                )
                 OUTPUT INSERTED.*
-                VALUES
-                    (
-                        NEWID(),
-                        @nume,
-                        @prenume,
-                        @initiale_tata,
-                        @data_nasterii,
-                        @sex,
-                        @cnp
-                    )
+                VALUES (
+                    NEWID(),
+                    @nume,
+                    @prenume,
+                    @initiale_tata,
+                    @data_nasterii,
+                    @sex,
+                    @cnp,
+                    @mentiuni
+                )
             `);
-        console.log('Pacient creat:', result.recordset[0]);
+        
+        const pacientId = result.recordset[0].id;
+            if (patient.telecom?.length) {
+                for (const telefon of patient.telecom) {
+                    if (!telefon.value) {
+                        continue;
+                    }
+                    await pool
+                        .request()
+                        .input('pacient_id', sql.UniqueIdentifier, pacientId)
+                        .input('eticheta', sql.VarChar, telefon.use ?? 'personal')
+                        .input('numar', sql.VarChar, telefon.value)
+                        .query(`
+                            INSERT INTO pacient_telefoane (
+                                pacient_id,
+                                eticheta,
+                                numar
+                            )
+                            VALUES (
+                                @pacient_id,
+                                @eticheta,
+                                @numar
+                            )
+                        `);
+                }
+            }
+
+        if (patient.address?.length) {
+            for (const adresa of patient.address) {
+                const tip = adresa.use === 'home' ? 'domiciliu' : 'resedinta';
+                const strada = adresa.line?.[0] ?? null;
+                const numarStrada = adresa.line?.[1] ?? null;
+
+                await pool
+                    .request()
+                    .input('pacient_id', sql.UniqueIdentifier, pacientId)
+                    .input('tip', sql.VarChar, tip)
+                    .input('strada', sql.NVarChar, strada)
+                    .input('numar_strada', sql.VarChar, numarStrada)
+                    .input('bloc', sql.VarChar, adresa.extension?.bloc ?? null)
+                    .input('etaj', sql.VarChar, adresa.extension?.etaj ?? null)
+                    .input('apartament', sql.VarChar, adresa.extension?.apartament ?? null)
+                    .input('judet_sector', sql.NVarChar, adresa.district ?? null)
+                    .input('oras', sql.NVarChar, adresa.city ?? null)
+                    .input('aceeasi_ca_domiciliul', sql.Bit, adresa.aceeasiCaDomiciliul ?? false)
+                    .query(`
+                        INSERT INTO pacient_adrese (
+                            pacient_id,
+                            tip,
+                            strada,
+                            numar_strada,
+                            bloc,
+                            etaj,
+                            apartament,
+                            judet_sector,
+                            oras,
+                            aceeasi_ca_domiciliul
+                        )
+                        VALUES (
+                            @pacient_id,
+                            @tip,
+                            @strada,
+                            @numar_strada,
+                            @bloc,
+                            @etaj,
+                            @apartament,
+                            @judet_sector,
+                            @oras,
+                            @aceeasi_ca_domiciliul
+                        )
+                    `);
+            }
+        }
+
+        const pacientComplet = await getPatientData(pool, pacientId);
+        console.log('Pacient creat:', pacientComplet);
         res.status(201).json(
-            toFhirPatient(result.recordset[0])
+            toFhirPatient(pacientComplet)
         );
     }
     catch(err) {

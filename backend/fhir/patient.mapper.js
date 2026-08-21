@@ -36,6 +36,24 @@ function toFhirPatient(patient) {
             }
         ];
     }
+    if(patient.telefoane?.length) {
+        result.telecom = patient.telefoane.map(telefon => ({
+            system: 'phone',
+            value: telefon.numar,
+            use: telefon.eticheta
+        }));
+    }
+    if(patient.adrese?.length) {
+        result.address = patient.adrese.map(adresa => ({
+            use: adresa.tip === 'domiciliu' ? 'home' : 'temp',
+            line: [
+                adresa.strada,
+                adresa.numar_strada
+            ].filter(Boolean),
+            city: adresa.oras || undefined,
+            district: adresa.judet_sector || undefined
+        }));
+    }
     return result;
 }
 

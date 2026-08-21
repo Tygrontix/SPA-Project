@@ -95,13 +95,10 @@ export class InfoPacientiComponent {
                     ]
                 }
             ],
-            identifier: form.cnp
-                ? [{
-                    system: 'urn:cnp',
-                    value: form.cnp
-                }]
-                : undefined,
-
+            identifier: form.cnp ? [{
+                system: 'urn:cnp', 
+                value: form.cnp
+            }] : undefined,
             telecom: existingPatient?.telecom,
             address: existingPatient?.address,
             note: existingPatient?.note

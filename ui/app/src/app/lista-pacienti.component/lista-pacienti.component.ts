@@ -25,6 +25,7 @@ export class ListaPacientiComponent implements OnInit {
     criteriuSortare = signal<CriteriuSortareInterface[]>([]);
     patients = signal<Patient[]>([]);
     defaultSort = signal<Patient[]>([]);
+    searchText = signal('');
 
     constructor(
         private dal: DALService,
@@ -106,12 +107,24 @@ export class ListaPacientiComponent implements OnInit {
 
     paginatedPatients = computed(() => {
         const patients = this.patients();
+        const search = this.searchText().toLowerCase().trim();
+        const filteredPatients = patients.filter(patient => {
+            const nume = this.patientService.getNume(patient).toLowerCase();
+            const prenume = this.patientService.getPrenume(patient).toLowerCase();
+            const cnp = this.patientService.getCNP(patient);
+
+            return (
+                nume.includes(search) ||
+                prenume.includes(search) ||
+                cnp.includes(search)
+            );
+        });
+
         const pageSize = this.pageSize();
         const currentPage = this.currentPage();
         const start = (currentPage - 1) * pageSize;
-        const end = start + pageSize;
 
-        return patients.slice(start, end);
+        return filteredPatients.slice(start, start + pageSize);
     });
 
     changePage(page: number | string): void {

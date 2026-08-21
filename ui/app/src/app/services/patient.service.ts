@@ -136,10 +136,7 @@ export class PatientService {
         return ani * 12 + luni;
     }
 
-    // nu merge ???????? mai trz
-    /*
-    getMentiuni(pacient: Patient): string { 
-        return patient.mentiuni?.[0]?.text ?? ''; 
+    getMentiuni(patient: Patient): string { 
+        return patient.note?.[0]?.text ?? ''; 
     }
-        */
 }
