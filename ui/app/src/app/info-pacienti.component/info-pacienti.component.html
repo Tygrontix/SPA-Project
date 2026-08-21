@@ -1,49 +1,49 @@
 <div class="container">
     <h1>Informatii pacient</h1>
-    <div class ="hl"></div>
+    <div class="hl"></div>
     <div class="info-pacienti">
 
-        <!-- Forms -->
+        <!-- Lista date -->
 
         @if(!loadingPatient() && !patient() && shared.mode() !== 'create') {
             <div class="no-form">
                 <h2>Niciun pacient selectat.</h2>
                 <p>Selecteaza un pacient din tabel.</p>
             </div>
-        } 
+        }
         @else {
             <div class="form-p">
                 <div class="form-group">
-                    <label for="nume">Nume</label>
+                    <label for="family">
+                        Nume
+                    </label>
                     <input
-                        id="nume"
-                        type="text"
-                        [ngModel]="formPatient().nume"
+                        [ngModel]="formPatient().family"
                         (ngModelChange)="formPatient.update(p => ({
                             ...p,
-                            nume: $event
+                            family: $event
                         }))"
                         [disabled]="shared.mode() === 'view'"
                     >
                 </div>
                 <div class="form-group">
-                    <label for="prenume">Prenume</label>
+                    <label for="given">
+                        Prenume
+                    </label>
                     <input
-                        id="prenume"
-                        type="text"
-                        [ngModel]="formPatient().prenume"
+                        [ngModel]="formPatient().given"
                         (ngModelChange)="formPatient.update(p => ({
                             ...p,
-                            prenume: $event
+                            given: $event
                         }))"
                         [disabled]="shared.mode() === 'view'"
                     >
                 </div>
                 <div class="form-group">
-                    <label for="cnp">CNP</label>
+                    <label for="cnp">
+                        CNP
+                    </label>
                     <input
-                        id="cnp"
-                        type="text"
                         maxlength="13"
                         [ngModel]="formPatient().cnp"
                         (ngModelChange)="formPatient.update(p => ({
@@ -54,42 +54,50 @@
                     >
                 </div>
                 <div class="form-group">
-                    <label for="data_nasterii">
+                    <label for="birthDate">
                         Data nasterii
                     </label>
                     <input
-                        id="data_nasterii"
-                        type="date"
-                        [ngModel]="formPatient().data_nasterii"
+                        [ngModel]="formPatient().birthDate"
                         (ngModelChange)="formPatient.update(p => ({
                             ...p,
-                            data_nasterii: $event
+                            birthDate: $event
                         }))"
                         [disabled]="shared.mode() === 'view'"
                     >
                 </div>
                 <div class="form-group">
-                    <label for="sex">Sex</label>
+                    <label for="gender">
+                        Sex
+                    </label>
                     <select
-                        id="sex"
-                        [ngModel]="formPatient().sex"
+                        [ngModel]="formPatient().gender"
                         (ngModelChange)="formPatient.update(p => ({
                             ...p,
-                            sex: $event
+                            gender: $event
                         }))"
                         [disabled]="shared.mode() === 'view'"
                     >
-                        <option [ngValue]="true">
+                        <option value="male">
                             Masculin
                         </option>
-                        <option [ngValue]="false">
+                        <option value="female">
                             Feminin
+                        </option>
+                        <option value="other">
+                            Altul
+                        </option>
+                        <option value="unknown">
+                            Necunoscut
                         </option>
                     </select>
                 </div>
             </div>
         }
     </div>
+
+    <!-- Butoane -->
+
     <div class="bottom-container">
         @if(loadingPatient() || patient() || shared.mode() === 'create') {
             <div class="hl"></div>
@@ -97,15 +105,13 @@
                 <div class="form-actions">
                     @if(shared.mode() === 'view') {
                         <button
-                            type="button"
                             class="btn-edit"
                             (click)="startEdit()"
                         >
                             Editeaza
                         </button>
-                        @if (patient(); as p) {
+                        @if(patient(); as p) {
                             <button
-                                type="button"
                                 class="btn-deletet"
                                 (click)="shared.deletePatient(p)"
                             >
@@ -115,14 +121,12 @@
                     }
                     @if(shared.mode() === 'edit') {
                         <button
-                            type="button"
                             class="btn-save"
                             (click)="savePatient()"
                         >
                             Salveaza
                         </button>
                         <button
-                            type="button"
                             class="btn-cancel"
                             (click)="cancelEdit()"
                         >
@@ -131,14 +135,12 @@
                     }
                     @if(shared.mode() === 'create') {
                         <button
-                            type="button"
                             class="btn-save"
                             (click)="savePatient()"
                         >
                             Creeaza pacient
                         </button>
                         <button
-                            type="button"
                             class="btn-cancel"
                             (click)="cancelEdit()"
                         >

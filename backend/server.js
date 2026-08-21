@@ -71,8 +71,6 @@ app.get('/fhir/Patient/:id', async (req, res) => {
             .request()
             .input('id', sql.UniqueIdentifier, id)
             .query(`
-                // SCHIMBAT:
-                // Folosim tabelul "pacienti".
                 SELECT * FROM pacienti
                 WHERE id = @id
             `);

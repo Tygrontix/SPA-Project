@@ -42,15 +42,12 @@
                 <div
                     class="notification-progress"
                 ></div>
-
             </div>
-
         </div>
 
         <!-- Nav -->
 
         <nav class="nav-lista-pacienti">
-
             <form class="cauta-pacient">
                 <input class="input-cauta-pacient" placeholder="Cauta pacient...">
             </form>
@@ -69,7 +66,6 @@
 
         <div class="pagination-container">
             <div class="page-size">
-
                 <span>Afiseaza:</span>
 
                 <select [value]="pageSize()" (change)="changePageSize(+$any($event.target).value)">
@@ -79,11 +75,8 @@
                 </select>
 
                 <span>din {{pageLength}} pacienti.</span>
-
             </div>
-
             <div class="pagination">
-
                 <button class="btn-page" [disabled]="currentPage() === 1" (click)="changePage(currentPage() - 1)">
                     <p>‹</p>
                 </button>
@@ -95,7 +88,6 @@
                 <button class="btn-page" [disabled]="currentPage() === totalPages" (click)="changePage(currentPage() + 1)">
                     <p>›</p>
                 </button>
-
             </div>
         </div>
 
@@ -172,7 +164,6 @@
                     <span>Actiuni</span>
                 </th>
             </tr>   
-
             <tr
                 *ngFor="let p of paginatedPatients()"
                 (click)="selectPatient(p)"
@@ -203,7 +194,6 @@
                     >
                         <i class="fa-solid fa-qrcode"></i>
                     </button>
-
                     <button
                         class="btn btn-edit-patient"
                         title="Edit Patient"
@@ -211,7 +201,6 @@
                     >
                         <i class="fa-solid fa-pencil"></i>
                     </button>
-
                     <button
                         class="btn btn-delete-patient"
                         title="Delete Patient"
@@ -233,13 +222,11 @@
                         [src]="imageQR"
                         alt="Cod QR"
                         width="123"
-                        heigth="123"
+                        height="123"
                     >
                 </div>
             </div>                            
         }
-
         <div class="hl"></div>
-
     </div>
 </div>

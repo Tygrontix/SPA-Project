@@ -79,24 +79,17 @@ export class ListaPacientiComponent implements OnInit {
     // Afiseaza pacientii din DB in tabel
 
     ngOnInit(): void {
-    console.log('========== LISTA NGONINIT ==========');
-
-    this.dal.getPatients().subscribe({
-        next: data => {
-            console.log('========== DATA IN LISTA ==========', data);
-            console.log(
-                '========== ARRAY IN LISTA? ==========',
-                Array.isArray(data)
-            );
-
-            this.defaultSort.set(data);
-            this.patients.set(data);
-        },
-        error: error => {
-            console.error('Eroare la incarcarea pacientilor:', error);
-        }
-    });
-}
+        this.dal.getPatients().subscribe({
+            next: data => {
+                console.log('Pacienti:', data);
+                this.defaultSort.set(data);
+                this.patients.set(data);
+            },
+            error: error => {
+                console.error('Eroare la incarcarea pacientilor:', error);
+            }
+        });
+    }
 
     // Pagini lista
 
@@ -218,6 +211,9 @@ export class ListaPacientiComponent implements OnInit {
     numeQR: string = '';
 
     async generateQR(patient: Patient): Promise<void> {
+        if(!patient.id) {
+            return;
+        }
         const cnp = this.patientService.getCNP(patient);
         const cifreCNP = cnp.length >= 12 ? cnp.slice(7, 12) : '';
         const sex = this.patientService.getSexLabelLong(patient);
@@ -225,6 +221,13 @@ export class ListaPacientiComponent implements OnInit {
         this.numeQR =
             `${this.patientService.getNume(patient)} ` +
             `${this.patientService.getPrenume(patient)}`;
+        try {
+            this.imageQR = await QRCode.toDataURL(this.linkQR);
+            this.showQR = true;
+        }
+        catch(err) {
+            console.error('Eroare generare QR:', err);
+        }
     }
 
     closePopupQR(): void {

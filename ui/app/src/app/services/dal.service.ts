@@ -64,28 +64,17 @@ export class DALService {
     ) {}
 
     getPatients(): Observable<Patient[]> {
-    console.log('========== INTRAT IN DAL ==========');
+        return this.http
+            .get<PatientBundle>(`${this.api}/Patient`)
+            .pipe(
+                map(bundle =>
+                    (bundle.entry ?? []).map(
+                        entry => entry.resource
+                    )
+                )
+            );
+    }
 
-    return this.http
-        .get<PatientBundle>(`${this.api}/Patient`)
-        .pipe(
-            map(bundle => {
-                console.log('========== BUNDLE ==========', bundle);
-
-                const patients = (bundle.entry ?? []).map(
-                    entry => entry.resource
-                );
-
-                console.log('========== PATIENTS ==========', patients);
-                console.log(
-                    '========== ARRAY? ==========',
-                    Array.isArray(patients)
-                );
-
-                return patients;
-            })
-        );
-}
     getPatient(id: string): Observable<Patient> {
         return this.http.get<Patient>(`${this.api}/Patient/${id}`);
     }
