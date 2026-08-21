@@ -2,7 +2,8 @@ import { Component, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import QRCode from 'qrcode';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
-import { DatabaseService, Patient } from '../services/database.service';
+import { DALService, Patient } from '../services/dal.service';
+import { PatientService } from '../services/pacient.service';
 import { SharedServicesService } from '../services/shared-services.service';
 
 type ColSort = 'nume' | 'prenume' | 'varsta' | 'sex';
@@ -26,8 +27,9 @@ export class ListaPacientiComponent implements OnInit {
     defaultSort = signal<Patient[]>([]);
 
     constructor(
-        private database: DatabaseService,
-        public shared: SharedServicesService
+        private dal: DALService,
+        public shared: SharedServicesService,
+        public patientService: PatientService
     ) {
         effect(() => {
             const createdPatient = this.shared.patientCreated();
@@ -68,7 +70,6 @@ export class ListaPacientiComponent implements OnInit {
             this.defaultSort.update(patients =>
                 patients.filter(p => p.id !== deletedPatient)
             );
-            
             if(this.currentPage() > this.totalPages && this.totalPages > 0) {
                 this.currentPage.set(this.totalPages);
             }
@@ -78,61 +79,24 @@ export class ListaPacientiComponent implements OnInit {
     // Afiseaza pacientii din DB in tabel
 
     ngOnInit(): void {
-        this.database.getPatients().subscribe(data => {
-            console.log('Pacienti:', data);
+    console.log('========== LISTA NGONINIT ==========');
+
+    this.dal.getPatients().subscribe({
+        next: data => {
+            console.log('========== DATA IN LISTA ==========', data);
+            console.log(
+                '========== ARRAY IN LISTA? ==========',
+                Array.isArray(data)
+            );
+
             this.defaultSort.set(data);
             this.patients.set(data);
-        });
-    }
-
-    // Calculeaza varsta pacientului in functie de data nasterii
-
-    getAge(dataN: string): string {
-
-        const dataNastere = new Date(dataN);
-        const dataActuala = new Date();
-        const aniLuni: string[] = [];
-        let ani = dataActuala.getFullYear() - dataNastere.getFullYear();
-        let luni = dataActuala.getMonth() - dataNastere.getMonth();
-
-        if (dataActuala.getDate() < dataNastere.getDate()) {
-            luni--;
+        },
+        error: error => {
+            console.error('Eroare la incarcarea pacientilor:', error);
         }
-        if (luni < 0) {
-            ani--;
-            luni += 12;
-        }
-        if (ani > 0) {
-            aniLuni.push(
-                ani === 1 ? '1 an' : `${ani} ani`
-            );
-        }
-        if (luni > 0) {
-            aniLuni.push(
-                luni === 1 ? '1 luna' : `${luni} luni`
-            );
-        }
-        if (ani === 0 && luni === 0) {
-            return '0 luni';
-        }
-        return aniLuni.join(' ');
-    }
-
-    getAgeInMonths(dataN: string): number {
-        const dataNastere = new Date(dataN);
-        const dataActuala = new Date();
-        let ani = dataActuala.getFullYear() - dataNastere.getFullYear();
-        let luni = dataActuala.getMonth() - dataNastere.getMonth();
-
-        if(dataActuala.getDate() < dataNastere.getDate()) {
-            luni--;
-        }
-        if(luni < 0) {
-            ani--;
-            luni += 12;
-        }
-        return ani * 12 + luni;
-    }
+    });
+}
 
     // Pagini lista
 
@@ -177,18 +141,16 @@ export class ListaPacientiComponent implements OnInit {
     getPages(): (number | string)[] {
         const total = this.totalPages;
 
-        if (total === 0) {
+        if(total === 0) {
             return [];
         }
-
-        if (total <= 5) {
+        if(total <= 5) {
             return Array.from(
                 { length: total },
                 (_, i) => i + 1
             );
         }
-
-        if (this.currentPage() <= 3) {
+        if(this.currentPage() <= 3) {
             return [
                 1,
                 2,
@@ -198,8 +160,7 @@ export class ListaPacientiComponent implements OnInit {
                 total
             ];
         }
-
-        if (this.currentPage() >= total - 2) {
+        if(this.currentPage() >= total - 2) {
             return [
                 1,
                 '...',
@@ -209,8 +170,6 @@ export class ListaPacientiComponent implements OnInit {
                 total
             ];
         }
-
-
         return [
             1,
             '...',
@@ -225,6 +184,9 @@ export class ListaPacientiComponent implements OnInit {
     // Pacienti
 
     selectPatient(patient: Patient): void {
+        if(!patient.id) {
+            return;
+        }
         this.shared.selectPatient(patient.id);
     }
 
@@ -239,6 +201,9 @@ export class ListaPacientiComponent implements OnInit {
     // Butoane pacienti
 
     editPatient(patient: Patient): void {
+        if(!patient.id) {
+            return;
+        }
         this.shared.selectPatient(patient.id);
         this.shared.startEdit();
     }
@@ -253,16 +218,13 @@ export class ListaPacientiComponent implements OnInit {
     numeQR: string = '';
 
     async generateQR(patient: Patient): Promise<void> {
-        const cifreCNP: string = patient.cnp.slice(7, 12);
-        const sex: string = patient.sex ? 'Masculin' : 'Feminin';
+        const cnp = this.patientService.getCNP(patient);
+        const cifreCNP = cnp.length >= 12 ? cnp.slice(7, 12) : '';
+        const sex = this.patientService.getSexLabelLong(patient);
         this.linkQR = `https://example.com/${patient.id}|${cifreCNP}|${sex}`;
-        this.numeQR = `${patient.nume} ${patient.prenume}`;
-        this.imageQR = await QRCode.toDataURL(this.linkQR, {
-            width: 256,
-            errorCorrectionLevel: 'M'
-        });
-        this.showQR = true;
-        console.log(`Cod QR generat - ${patient.id}`)
+        this.numeQR =
+            `${this.patientService.getNume(patient)} ` +
+            `${this.patientService.getPrenume(patient)}`;
     }
 
     closePopupQR(): void {
@@ -312,27 +274,27 @@ export class ListaPacientiComponent implements OnInit {
                 let rez = 0;
                 switch(criteriu.coloana) {
                     case 'nume':
-                        rez = a.nume.localeCompare(
-                            b.nume,
+                        rez = this.patientService.getNume(a).localeCompare(
+                            this.patientService.getNume(b),
                             'ro',
-                            {sensitivity: 'base'}
+                            { sensitivity: 'base' }
                         );
                         break;
 
                     case 'prenume':
-                        rez = a.prenume.localeCompare(
-                            b.prenume,
+                        rez = this.patientService.getPrenume(a).localeCompare(
+                            this.patientService.getPrenume(b),
                             'ro',
-                            {sensitivity: 'base'}
+                            { sensitivity: 'base' }
                         );
                         break;
 
                     case 'varsta':
-                        rez = this.getAgeInMonths(a.data_nasterii) - this.getAgeInMonths(b.data_nasterii);
+                        rez = this.patientService.getAgeInMonths(a) - this.patientService.getAgeInMonths(b);
                         break;
 
                     case 'sex':
-                        rez = Number(a.sex) - Number(b.sex);
+                        rez = this.patientService.getSexOrder(a) - this.patientService.getSexOrder(b);
                         break;  
                 }
                 if(rez !== 0) {

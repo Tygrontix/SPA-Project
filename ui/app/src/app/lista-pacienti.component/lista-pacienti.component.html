@@ -177,11 +177,21 @@
                 *ngFor="let p of paginatedPatients()"
                 (click)="selectPatient(p)"
             >
-                <td class="td-nume">{{ p.nume }}</td>
-                <td class="td-prenume">{{ p.prenume }}</td>
-                <td class="centered-td">{{ getAge(p.data_nasterii) }}</td>
-                <td class="centered-td">{{ p.sex ? 'M' : 'F' }}</td>
-                <td>{{ p.cnp }}</td>
+                <td class="td-nume">
+                    {{patientService.getNume(p)}}
+                </td>
+                <td class="td-prenume">
+                    {{patientService.getPrenume(p)}}
+                </td>
+                <td class="centered-td">
+                    {{patientService.getAge(p)}}
+                </td>
+                <td class="centered-td">
+                    {{patientService.getSexLabel(p)}}
+                </td>
+                <td>
+                    {{patientService.getCNP(p)}}
+                </td>
 
                 <td class="actions"
                     (click)="$event.stopPropagation()"
@@ -223,7 +233,7 @@
                         [src]="imageQR"
                         alt="Cod QR"
                         width="123"
-                        hiegth="123"
+                        heigth="123"
                     >
                 </div>
             </div>                            

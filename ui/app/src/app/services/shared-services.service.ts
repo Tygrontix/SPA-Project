@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { Patient, DatabaseService } from './database.service';
+import { Patient, DALService } from './dal.service';
+import { PatientService } from './pacient.service';
 
 interface Notif {
     id: number;
@@ -20,7 +21,8 @@ export class SharedServicesService {
     notifications = signal<Notif[]>([]);
 
     constructor(
-        private database: DatabaseService
+        private dal: DALService,
+        public patientService: PatientService
     ) {}
 
     private notificareId = 0;
@@ -40,25 +42,30 @@ export class SharedServicesService {
     }
 
     deletePatient(patient: Patient): void {
+        if(!patient.id) {
+            return;
+        }
+        const patientId = patient.id;
+        const nume = this.patientService.getNume(patient);
+        const prenume = this.patientService.getPrenume(patient);
         const confirmed = confirm(
-            `Confirmi stergerea pacientului ${patient.nume} ${patient.prenume}?`
+            `Confirmi stergerea pacientului ${nume} ${prenume}?`
         );
 
         if(!confirmed) {
             console.log('Stergere anulata.');
             return;
         }
-
-        this.database.deletePatient(patient.id).subscribe({
+        this.dal.deletePatient(patient.id).subscribe({
             next: () => {
-                console.log(`Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}`);
-                this.patientDeleted.set(patient.id);
+                console.log(`Pacient sters: ${nume} ${prenume} - ID: ${patient.id}`);
+                this.patientDeleted.set(patientId);
                 if(this.selectedPatientId() === patient.id) {
                     this.selectedPatientId.set(null);
                     this.mode.set('view');
                 };
                 this.showNotification(
-                    `Pacient sters: ${patient.nume} ${patient.prenume} - ID: ${patient.id}.`,
+                    `Pacient sters: ${nume} ${prenume} - ID: ${patient.id}.`,
                      'success'
                 );
             },
@@ -73,6 +80,9 @@ export class SharedServicesService {
     }
 
     createdPatient(patient: Patient): void {
+        if(!patient.id) {
+            return;
+        }
         this.patientCreated.set(patient);
         this.selectedPatientId.set(patient.id);
         this.mode.set('view');

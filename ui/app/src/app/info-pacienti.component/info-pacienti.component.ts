@@ -1,6 +1,6 @@
 import { Component, effect, input, signal, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatabaseService, Patient, NewPatient } from '../services/database.service';
+import { DALService, Patient } from '../services/dal.service';
 import { SharedServicesService } from '../services/shared-services.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class InfoPacientiComponent {
     }
 
     constructor(
-        private database: DatabaseService,
+        private dal: DALService,
         public shared: SharedServicesService
 
     ) {
@@ -42,7 +42,7 @@ export class InfoPacientiComponent {
             }
 
             this.loadingPatient.set(true);
-            this.database.getPatient(id).subscribe({
+            this.dal.getPatient(id).subscribe({
                 next: (data) => {
                     this.patient.set(data);
                     this.formPatient.set({
@@ -116,7 +116,7 @@ export class InfoPacientiComponent {
                 sex: form.sex,
                 cnp: form.cnp
             };
-            this.database.setPatient(newPatient).subscribe({
+            this.dal.setPatient(newPatient).subscribe({
                 next: (savedPatient) => {
                     this.patient.set(savedPatient);
                     this.shared.createdPatient(savedPatient);
@@ -155,7 +155,7 @@ export class InfoPacientiComponent {
                 sex: form.sex,
                 cnp: form.cnp
             };
-            this.database.setPatient(updatedPatient).subscribe({
+            this.dal.setPatient(updatedPatient).subscribe({
                 next:(savedPatient) => {
                     this.shared.updatedPatient(savedPatient);
                     this.patient.set(savedPatient);

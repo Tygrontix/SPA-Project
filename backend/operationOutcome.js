@@ -1,4 +1,4 @@
-function createOPerationOutcome(
+function createOperationOutcome(
     severity,
     code,
     message
@@ -17,5 +17,5 @@ function createOPerationOutcome(
     }
 }
 module.exports = {
-    createOpeartionOutcome
+    createOperationOutcome
 };
