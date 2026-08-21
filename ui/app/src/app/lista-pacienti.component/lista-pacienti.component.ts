@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import QRCode from 'qrcode';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { DALService, Patient } from '../services/dal.service';
-import { PatientService } from '../services/pacient.service';
+import { PatientService } from '../services/patient.service';
 import { SharedServicesService } from '../services/shared-services.service';
 
 type ColSort = 'nume' | 'prenume' | 'varsta' | 'sex';

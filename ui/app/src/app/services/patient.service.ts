@@ -55,10 +55,10 @@ export class PatientService {
 
     getSexOrder(patient: Patient): number {
         switch (patient.gender) {
-            case 'female':
+            case 'male':
                 return 0;
 
-            case 'male':
+            case 'female':
                 return 1;
 
             case 'other':
@@ -70,6 +70,13 @@ export class PatientService {
             default:
                 return 4;
         }
+    }
+
+    getDataNasterii(patient: Patient): string {
+        if(!patient.birthDate) {
+            return '';
+        }
+        return patient.birthDate;
     }
 
     getAge(patient: Patient): string {
@@ -128,4 +135,11 @@ export class PatientService {
         }
         return ani * 12 + luni;
     }
+
+    // nu merge ???????? mai trz
+    /*
+    getMentiuni(pacient: Patient): string { 
+        return patient.mentiuni?.[0]?.text ?? ''; 
+    }
+        */
 }

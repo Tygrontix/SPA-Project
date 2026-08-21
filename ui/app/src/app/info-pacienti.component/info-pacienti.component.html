@@ -40,6 +40,20 @@
                     >
                 </div>
                 <div class="form-group">
+                    <label for="initialeTata">
+                        Initiala tatalui
+                    </label>
+                    <input
+                        maxlength="3"
+                        [ngModel]="formPatient().initialeTata"
+                        (ngModelChange)="formPatient.update(p => ({
+                            ...p,
+                            initialeTata: $event
+                        }))"
+                        [disabled]="shared.mode() === 'view'"
+                    >
+                </div>
+                <div class="form-group">
                     <label for="cnp">
                         CNP
                     </label>

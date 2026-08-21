@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Patient, DALService } from './dal.service';
-import { PatientService } from './pacient.service';
+import { PatientService } from './patient.service';
 
 interface Notif {
     id: number;

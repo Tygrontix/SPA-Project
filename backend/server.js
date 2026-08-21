@@ -115,12 +115,34 @@ app.post('/fhir/Patient', async (req, res) => {
                 )
             );
         }
-        const nume = patient.name?.[0]?.family ?? '';
-        const prenume = patient.name?.[0]?.given?.[0] ?? null;
-        const initialeTata = patient.name?.[0]?.given?.[1] ?? null;
+        let nume = patient.name?.[0]?.family ?? '';
+        let prenume = patient.name?.[0]?.given?.[0] ?? '';
+        let initialeTata = patient.name?.[0]?.given?.[1] ?? '';
+        const sex = patient.gender === 'male' ? 'M' : patient.gender === 'female' ? 'F' : patient.gender ?? null;
+
+        if(!nume && !prenume) {
+            nume = 'Popescu';
+            if(sex === 'M') {
+                prenume = 'Ion';
+                initialeTata = 'XY';
+            }
+            else if(sex === 'F') {
+                prenume = 'Ioana';
+                initialeTata = 'XX';
+            }
+        }
+        if((nume && !prenume) || (!nume && prenume)) {
+            return res.status(400).json(
+                createOperationOutcome(
+                    'error',
+                    'invalid',
+                    'Numele si prenumele trebuie completate impreuna.'
+                )
+            );
+        }
+        
         const dataNasterii =patient.birthDate ?? null;
         const cnp = patient.identifier?.find(identifier => identifier.system === 'urn:cnp')?.value ?? null;
-        const sex = patient.gender === 'male' ? 'M' : patient.gender === 'female' ? 'F' : patient.gender ?? null;
         const pool = await sql.connect(config);
         const result = await pool
             .request()

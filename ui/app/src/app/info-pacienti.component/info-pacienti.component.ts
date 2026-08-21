@@ -2,7 +2,7 @@ import { Component, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DALService, Patient } from '../services/dal.service';
 import { SharedServicesService } from '../services/shared-services.service';
-import { PatientService } from '../services/pacient.service';
+import { PatientService } from '../services/patient.service';
 
 @Component({
     standalone: true,
@@ -18,6 +18,7 @@ export class InfoPacientiComponent {
     formPatient = signal({
         family: '',
         given: '',
+        initialeTata: '',
         birthDate: '',
         gender: 'unknown' as 'male' | 'female' | 'other' | 'unknown',
         cnp: ''
@@ -60,6 +61,7 @@ export class InfoPacientiComponent {
         return {
             family: this.patientService.getNume(patient),
             given: this.patientService.getPrenume(patient),
+            initialeTata: this.patientService.getInitialeTata(patient),
             birthDate: patient.birthDate ? patient.birthDate.split('T')[0] : '',
             gender: patient.gender ?? 'unknown',
             cnp: this.patientService.getCNP(patient)
@@ -70,7 +72,15 @@ export class InfoPacientiComponent {
         form: ReturnType<InfoPacientiComponent['getFormValue']>,
         existingPatient?: Patient
     ): Patient {
-        const patient: Patient = {
+        const given: string[] = [];
+
+        if(form.given) {
+            given.push(form.given);
+            if(form.initialeTata) {
+                given.push(form.initialeTata);
+            }
+        }
+        return {
             resourceType: 'Patient',
             id: existingPatient?.id,
             active: existingPatient?.active ?? true,
@@ -79,23 +89,23 @@ export class InfoPacientiComponent {
             name: [
                 {
                     family: form.family || undefined,
-                    given: form.given
-                        ? [form.given]
-                        : []
+                    given: [
+                        ...(form.given ? [form.given] : []),
+                        ...(form.initialeTata ? [form.initialeTata] : [])
+                    ]
                 }
             ],
-            identifier: form.cnp ? 
-                [
-                    {
-                        system: 'urn:cnp',
-                        value: form.cnp
-                    }
-                ] : undefined,
+            identifier: form.cnp
+                ? [{
+                    system: 'urn:cnp',
+                    value: form.cnp
+                }]
+                : undefined,
+
             telecom: existingPatient?.telecom,
             address: existingPatient?.address,
             note: existingPatient?.note
         };
-        return patient;
     }
 
     getFormValue() {
@@ -106,6 +116,7 @@ export class InfoPacientiComponent {
         this.formPatient.set({
             family: '',
             given: '',
+            initialeTata: '',
             birthDate: '',
             gender: 'unknown',
             cnp: ''
